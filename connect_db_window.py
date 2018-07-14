@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 
 from settings import Settings
+from db_tool import DatabaseTool
 
 
 class ConnectDbWindow:
@@ -34,21 +35,21 @@ class ConnectDbWindow:
 		self.__password_field = Entry(master=frame, textvariable=self.__password_str, show='*', font=Settings.font_small)
 		self.__password_field.grid(row=1, column=1, pady=(0, Settings.padding_y))
 
-		# port
-		port = Label(master=frame, text='Port:', font=Settings.font_small)
-		port.grid(row=2, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__port_str = StringVar()
-		self.__port_str.set('5432')
-		self.__port_field = Entry(master=frame, textvariable=self.__port_str, font=Settings.font_small)
-		self.__port_field.grid(row=2, column=1, pady=(0, Settings.padding_y))
-
 		# host
 		host = Label(master=frame, text='Host:', font=Settings.font_small)
-		host.grid(row=3, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		host.grid(row=2, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__host_str = StringVar()
 		self.__host_str.set('localhost')
 		self.__host_field = Entry(master=frame, textvariable=self.__host_str, font=Settings.font_small)
-		self.__host_field.grid(row=3, column=1, pady=(0, Settings.padding_y))
+		self.__host_field.grid(row=2, column=1, pady=(0, Settings.padding_y))
+
+		# port
+		port = Label(master=frame, text='Port:', font=Settings.font_small)
+		port.grid(row=3, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__port_str = StringVar()
+		self.__port_str.set('5432')
+		self.__port_field = Entry(master=frame, textvariable=self.__port_str, font=Settings.font_small)
+		self.__port_field.grid(row=3, column=1, pady=(0, Settings.padding_y))
 
 		# database
 		database = Label(master=frame, text='Database:', font=Settings.font_small)
@@ -62,18 +63,16 @@ class ConnectDbWindow:
 		connect.grid(row=5, column=1, sticky=E)
 
 	def __connect_to_db__(self):
-		# check if all the fields are filled in
 		username = self.__username_field.get()
 		password = self.__password_field.get()
-		port = self.__port_field.get()
 		host = self.__host_field.get()
+		port = self.__port_field.get()
 		database = self.__database_field.get()
 
 		if database == '':
 			messagebox.showerror('No database specified', 'Please specify a database name to connect to')
 		else:
-			pass
-
+			tool = DatabaseTool(username, password, host, port, database)
 
 root = Tk()
 
