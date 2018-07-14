@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 
 from db_tool import DatabaseTool
 from settings import Settings
@@ -9,11 +10,16 @@ class MainWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
 		super().__init__(master=master)
 		self.__tool = db_tool
+		self.__master = master
 		self.__config__()
 
 	def __config__(self):
 		self.pack(padx=Settings.padding_x, pady=Settings.padding_y, fill=BOTH)
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
+
+		menu = Menu(self)
+		menu.add_command(label='View Tables', command=self.__view_tables__)
+		self.__master.config(menu=menu)
 
 		# file name
 		self.__file_name_str = StringVar()
@@ -63,6 +69,11 @@ class MainWindow(Frame):
 									   state=DISABLED,
 									   command=self.__convert_file__)
 		self.__convert_button.grid(row=0, column=1, padx=(Settings.padding_x, 0))
+
+	def __view_tables__(self):
+		tables = self.__tool.get_tables()
+		to_display = '\n'.join([key for key, value in tables.items()])
+		messagebox.showinfo('Existing Tables', to_display)
 
 	def __toggle_states__(self, state):
 		self.__convert_button.config(state=state)
