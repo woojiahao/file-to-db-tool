@@ -4,6 +4,7 @@ from sqlalchemy_utils import database_exists
 
 class DatabaseTool:
 	def __init__(self, username: str, password: str, host: str, port: str, database: str):
+		self.database = database
 		self.__connection_string = self.__create_connection_string__(username, password, host, port, database)
 		self.__engine = None
 
@@ -17,3 +18,4 @@ class DatabaseTool:
 
 	def open_engine(self):
 		self.__engine = create_engine(self.__connection_string)
+
