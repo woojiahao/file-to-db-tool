@@ -5,61 +5,61 @@ from settings import Settings
 from db_tool import DatabaseTool
 
 
-class ConnectDbWindow:
+class ConnectDbFrame(Frame):
 	"""Provides the user with the ability to connect to a database of their choice"""
 
 	def __init__(self, master: Tk):
+		super().__init__(master=master)
 		self.__master = master
 		self.__config__()
 
 	def __config__(self):
 		self.__master.resizable(0, 0)
 
-		frame = Frame(master=self.__master)
-		frame.grid(padx=Settings.padding_x, pady=Settings.padding_y)
-		frame.winfo_toplevel().title('Connect to database')
+		self.grid(padx=Settings.padding_x, pady=Settings.padding_y)
+		self.winfo_toplevel().title('Connect to database')
 
 		# username
-		username = Label(master=frame, text='Username:', font=Settings.font_small)
+		username = Label(master=self, text='Username:', font=Settings.font_small)
 		username.grid(row=0, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__username_str = StringVar()
 		self.__username_str.set('postgres')
-		self.__username_field = Entry(master=frame, textvariable=self.__username_str, font=Settings.font_small)
+		self.__username_field = Entry(master=self, textvariable=self.__username_str, font=Settings.font_small)
 		self.__username_field.grid(row=0, column=1, pady=(0, Settings.padding_y))
 
 		# password
-		password = Label(master=frame, text='Password:', font=Settings.font_small)
+		password = Label(master=self, text='Password:', font=Settings.font_small)
 		password.grid(row=1, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__password_str = StringVar()
 		self.__password_str.set('root')
-		self.__password_field = Entry(master=frame, textvariable=self.__password_str, show='*', font=Settings.font_small)
+		self.__password_field = Entry(master=self, textvariable=self.__password_str, show='*', font=Settings.font_small)
 		self.__password_field.grid(row=1, column=1, pady=(0, Settings.padding_y))
 
 		# host
-		host = Label(master=frame, text='Host:', font=Settings.font_small)
+		host = Label(master=self, text='Host:', font=Settings.font_small)
 		host.grid(row=2, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__host_str = StringVar()
 		self.__host_str.set('localhost')
-		self.__host_field = Entry(master=frame, textvariable=self.__host_str, font=Settings.font_small)
+		self.__host_field = Entry(master=self, textvariable=self.__host_str, font=Settings.font_small)
 		self.__host_field.grid(row=2, column=1, pady=(0, Settings.padding_y))
 
 		# port
-		port = Label(master=frame, text='Port:', font=Settings.font_small)
+		port = Label(master=self, text='Port:', font=Settings.font_small)
 		port.grid(row=3, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__port_str = StringVar()
 		self.__port_str.set('5432')
-		self.__port_field = Entry(master=frame, textvariable=self.__port_str, font=Settings.font_small)
+		self.__port_field = Entry(master=self, textvariable=self.__port_str, font=Settings.font_small)
 		self.__port_field.grid(row=3, column=1, pady=(0, Settings.padding_y))
 
 		# database
-		database = Label(master=frame, text='Database:', font=Settings.font_small)
+		database = Label(master=self, text='Database:', font=Settings.font_small)
 		database.grid(row=4, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__database_str = StringVar()
-		self.__database_field = Entry(master=frame, textvariable=self.__database_str, font=Settings.font_small)
+		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
 		self.__database_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
 
 		# connect
-		connect = Button(master=frame, text='Connect', font=Settings.font_small, command=self.__connect_to_db__)
+		connect = Button(master=self, text='Connect', font=Settings.font_small, command=self.__connect_to_db__)
 		connect.grid(row=5, column=1, sticky=E)
 
 	def __connect_to_db__(self):
@@ -76,7 +76,7 @@ class ConnectDbWindow:
 
 root = Tk()
 
-connect_db = ConnectDbWindow(root)
+connect_db = ConnectDbFrame(root)
 
 if __name__ == '__main__':
 	root.mainloop()
