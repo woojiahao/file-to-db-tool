@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists
+import pandas as pd
 
 
 class DatabaseTool:
@@ -18,4 +19,8 @@ class DatabaseTool:
 
 	def open_engine(self):
 		self.__engine = create_engine(self.__connection_string)
+
+	def convert(self, filename: str, skiprows: int, delimiter: str):
+		df = pd.read_csv(filename, skiprows=skiprows, delimiter=delimiter)
+		print(df)
 

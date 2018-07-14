@@ -7,8 +7,6 @@ from main_window import MainWindow
 
 
 class ConnectDatabaseWindow(Frame):
-	"""Provides the user with the ability to connect to a database of their choice"""
-
 	def __init__(self, master: Tk):
 		super().__init__(master=master)
 		self.__master = master
