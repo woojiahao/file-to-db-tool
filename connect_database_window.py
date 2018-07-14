@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import messagebox
 
-from settings import Settings
 from db_tool import DatabaseTool
+from settings import Settings
+from main_window import MainWindow
 
 
-class ConnectDbFrame(Frame):
+class ConnectDatabaseWindow(Frame):
 	"""Provides the user with the ability to connect to a database of their choice"""
 
 	def __init__(self, master: Tk):
@@ -70,13 +71,21 @@ class ConnectDbFrame(Frame):
 		database = self.__database_field.get()
 
 		if database == '':
-			messagebox.showerror('No database specified', 'Please specify a database name to connect to')
+			messagebox.showerror('No database specified',
+								 'Please specify a database name to connect to')
 		else:
-			tool = DatabaseTool(username, password, host, port, database)
+			self.__tool = DatabaseTool(username, password, host, port, database)
+			if not self.__tool.has_database():
+				messagebox.showerror('Invalid database chosen',
+									 'The database {} chosen does not exist, please select another one'.format(
+										 database))
+			else:
+				messagebox.showinfo('Successful connection',
+									'You are now connected to the database: {}'.format(database))
+				self.__tool.open_engine()
+				self.__launch_main_window__()
 
-root = Tk()
+	def __launch_main_window__(self):
+		self.__master.destroy()
+		MainWindow(Tk(), self.__tool)
 
-connect_db = ConnectDbFrame(root)
-
-if __name__ == '__main__':
-	root.mainloop()
