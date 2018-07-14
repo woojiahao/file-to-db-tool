@@ -1,0 +1,2 @@
+class DatabaseTool:
+	pass
