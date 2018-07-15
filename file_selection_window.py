@@ -8,7 +8,6 @@ from db_tool import DatabaseTool
 from settings import Settings
 import utils
 
-# TODO: Add a field to specify the skip and fill values
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
 		"""

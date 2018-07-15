@@ -11,7 +11,6 @@ import utils
 
 # TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Fix the table name field and label not being on the same line
-# TODO: Add field heading
 # TODO: Add confirmation dialog before converting
 # TODO: Allow users to change the name of the columns
 class ConvertSetupWindow(Frame):
@@ -68,6 +67,7 @@ class ConvertSetupWindow(Frame):
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
 
 		menu = Menu(master=self)
+		menu.add_command(label='Back', command=self.__back__)
 		menu.add_command(label='View Tables', command=self.__display_tables__)
 		self.__master.config(menu=menu)
 
@@ -133,6 +133,9 @@ class ConvertSetupWindow(Frame):
 											variable=pk)
 			primary_key_check.grid(row=0, column=2)
 			self.__pks.append(pk)
+
+	def __back__(self):
+		utils.launch_file_selection(self.__master, self.__tool)
 
 	def __display_tables__(self):
 		"""
