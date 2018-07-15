@@ -2,14 +2,14 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 
+from os import path
+
 from db_tool import DatabaseTool
 from settings import Settings
 from convert_setup_window import ConvertSetupWindow
 
 # TODO: Check the file types and convert accordingly
 # TODO: Before converting the file, allow the user to change the data types of the headers
-# TODO: Check if the file is empty after the user tries to convert the file
-# TODO: Add checking for whether the skiprows is a valid integer
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
 		super().__init__(master=master)
@@ -101,12 +101,35 @@ class FileSelectionWindow(Frame):
 				self.__toggle_states__(DISABLED)
 
 
+	def __is_file_empty__(self, filename: str):
+		return path.getsize(filename) <= 0
+
+	def __is_integer__(self, target: str):
+		try:
+			target = int(target)
+		except ValueError:
+			return False
+		return True
+
 	def __convert_file__(self):
 		filename = self.__file_name_field.get()
-		skiprows = int(self.__skiprows_field.get())
+		skiprows = self.__skiprows_field.get()
 		delimiter = self.__delimiter_field.get()
 
-		self.__launch_setup_window__(filename, skiprows, delimiter)
+		if skiprows.strip() == '' or delimiter.strip() == '':
+			messagebox.showerror('Empty inputs', 'Skip rows and delimiters should not be empty, using defaults of 0 and ,')
+			skiprows = '0'
+			delimiter = ','
+
+		if self.__is_file_empty__(filename):
+			messagebox.showerror('Empty file', 'File: {} is empty, please select another file'.format(filename))
+		else:
+			if not self.__is_integer__(skiprows):
+				messagebox.showerror('Invalid skiprow',
+									 'Skiprow: {} is not an integer, please select a valid integer'.format(skiprows))
+			else:
+				skiprows = int(skiprows)
+				self.__launch_setup_window__(filename, skiprows, delimiter)
 
 	def __launch_setup_window__(self, filename: str, skiprows: int, delimiter: str):
 		self.__master.destroy()
