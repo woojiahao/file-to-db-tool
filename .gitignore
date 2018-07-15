@@ -109,3 +109,4 @@ venv.bak/
 
 # Own files
 temp_storage.txt
+data/empty.csv
