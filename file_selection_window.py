@@ -29,7 +29,7 @@ class FileSelectionWindow(Frame):
 		self.__file_name_str.set('Nothing is selected')
 		self.__file_name_field = Entry(master=self, textvariable=self.__file_name_str, font=Settings.font_small,
 									   state=DISABLED)
-		self.__file_name_field.pack(fill='x', pady=(0, Settings.padding_y))
+		self.__file_name_field.pack(fill=X)
 
 		button_frame = Frame(master=self)
 		button_frame.pack(fill=X, pady=(Settings.padding_y, 0))
