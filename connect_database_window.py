@@ -6,7 +6,6 @@ from settings import Settings
 import utils
 
 # TODO: Remove the default database string
-# TODO: Add keybinding 'Enter' to connect
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
@@ -23,9 +22,12 @@ class ConnectDatabaseWindow(Frame):
 		:return: None
 		"""
 		self.__master.resizable(0, 0)
-
 		self.grid(padx=Settings.padding_x, pady=Settings.padding_y)
 		self.winfo_toplevel().title('Connect to database')
+
+		def key(event):
+			self.__connect_to_db__()
+		self.__master.bind('<Return>', key)
 
 		# username
 		username = Label(master=self, text='Username:', font=Settings.font_small)
