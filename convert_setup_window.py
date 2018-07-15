@@ -8,10 +8,10 @@ from db_tool import DatabaseTool
 from settings import Settings
 
 
-# TODO: Check if the table name is blank, if it is, warn the user to specify one otherwise the file name will be used as the table name
 # TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Fix the table name field and label not being on the same line
 # TODO: Add field heading
+# TODO: Add confirmation dialog before converting
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
 		super().__init__(master=master)
