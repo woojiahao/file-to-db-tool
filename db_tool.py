@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float
+from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import database_exists
 
@@ -53,6 +53,10 @@ class DatabaseTool:
 				data_type = String(max_length)
 			elif dtype_selected == 'float64':
 				data_type = Float
+			elif dtype_selected == 'datetime64':
+				data_type = Date
+			elif dtype_selected == 'bool':
+				data_type = Boolean
 
 			attr_dict[key] = Column(data_type, primary_key=value[1])
 
@@ -68,6 +72,9 @@ class DatabaseTool:
 		"""
 		table = type(attr_dict['__tablename__'], (self.__Base,), attr_dict)
 		self.__meta.create_all(self.__engine)
+
+	def __populate_table__(self, tablename: str, df: DataFrame):
+		pass
 
 	def has_database(self):
 		"""
@@ -104,3 +111,4 @@ class DatabaseTool:
 		"""
 		print(df.dtypes)
 		self.__create_table__(self.__create_attr_dict__(tablename, settings, df))
+		self.__populate_table__(tablename, df)
