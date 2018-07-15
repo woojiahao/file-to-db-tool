@@ -12,8 +12,18 @@ from settings import Settings
 # TODO: Fix the table name field and label not being on the same line
 # TODO: Add field heading
 # TODO: Add confirmation dialog before converting
+# TODO: Allow users to change the name of the columns
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
+		"""
+		This window will allow users to configure the table that will be created
+		Specify the data type of the column, the name of the column and whether the column will be a PK
+		:param master: Root of the layout
+		:param db_tool: Connection to the database
+		:param filename: Name of the file to convert
+		:param skiprows: Skip rows parameter for reading the CSV
+		:param delimiter: Delimiter that separates each entry in the CSV file
+		"""
 		super().__init__(master=master)
 		self.__filename = filename
 		self.__skiprows = skiprows
@@ -26,10 +36,18 @@ class ConvertSetupWindow(Frame):
 		self.__config__()
 
 	def __open_file__(self):
+		"""
+		Simple method that uses pandas to open the specified CSV file
+		:return: DataFrame of the target CSV file
+		"""
 		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter)
 		return df
 
 	def __config__(self):
+		"""
+		Configures the window display
+		:return:
+		"""
 		self.pack(padx=Settings.padding_x, pady=Settings.padding_y, fill=BOTH)
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
 
@@ -67,6 +85,12 @@ class ConvertSetupWindow(Frame):
 		convert_button.grid(row=0, column=1)
 
 	def __populate_table_headers__(self):
+		"""
+		Goes through every column within the dataframe and dynamically generates the column editing "row" inside the
+		header frame.
+		Maintains a copy of the primary key BooleanVars as it has to be used later on again
+		:return: None
+		"""
 		self.__pks = []
 		for col_name, col_type in zip(self.__df.columns.values, self.__df.dtypes):
 			inline_frame = Frame(master=self.__headers)
@@ -91,7 +115,66 @@ class ConvertSetupWindow(Frame):
 	def __reset_fields__(self):
 		pass
 
+	def __is_valid_pk__(self, headers: dict):
+		"""
+		Valid primary key can be composed of multiple columns
+		Join all the selected columns together into a column
+		A valid combination of PK when the length of the normal joint column is == to the length of the distinct column
+		:param headers: Column data
+		:return: If the combination of PKs are valid.
+		"""
+		pks = [key for key, value in headers.items() if value[1]]
+		filtered = self.__df[pks[0]].map(str)
+
+		for i in range(1, len(pks)):
+			filtered += self.__df[pks[i]].map(str)
+
+		length = len(filtered)
+		d_length = len(set(filtered))
+
+		return length == d_length
+
+	@staticmethod
+	def __check_pk__(headers: dict):
+		"""
+		Checks whether at least 1 column is selected to be the PK
+		Uses boolean algebra to determine if there is a PK selected
+		:param headers: Column data
+		:return: If there is a PK selected
+		"""
+		has_pk = False
+		for value in headers.values():
+			has_pk |= value[1]
+		return has_pk
+
+	def __get_all_values__(self):
+		"""
+		Loops through the headers (column editing) section widgets
+		Goes through each of the children of each row and extracts the data from it
+		Creates a dictionary where the keys are the column names and the values is a list => [<data_type>, <is_pk>]
+		:return: Dictionary of the column information needed to form an attr_dict
+		"""
+		rows = { }
+		key = ''
+		for i, row in enumerate(self.__headers.winfo_children()):
+			for j, child in enumerate(row.winfo_children()):
+				if j == 0 and type(child) is Entry:
+					key = child.get()
+					rows[key] = []
+				else:
+					if type(child) is Entry:
+						rows[key].append(child.get())
+					elif type(child) is Checkbutton:
+						rows[key].append(self.__pks[i].get())
+		return rows
+
 	def __convert__(self):
+		"""
+		Attempts to convert the input CSV file to a database table
+		Toggled on button click
+		Performs checks for empty table names, invalid combinations of PKs and no PKs being selected.
+		:return: None
+		"""
 		table_name = self.__tablename_field.get()
 		if table_name.strip() == '':
 			messagebox.showerror('Empty table name', 'You did not specify a table name!')
@@ -108,36 +191,4 @@ class ConvertSetupWindow(Frame):
 										'The file: {} is currently being converted to a table!'.format(self.__filename))
 					self.__tool.convert(self.__df, table_name, headers)
 
-	def __is_valid_pk__(self, headers: dict):
-		pks = [key for key, value in headers.items() if value[1]]
-		filtered = self.__df[pks[0]].map(str)
 
-		for i in range(1, len(pks)):
-			filtered += self.__df[pks[i]].map(str)
-
-		length = len(filtered)
-		d_length = len(set(filtered))
-
-		return length == d_length
-
-	@staticmethod
-	def __check_pk__(headers: dict):
-		has_pk = False
-		for value in headers.values():
-			has_pk |= value[1]
-		return has_pk
-
-	def __get_all_values__(self):
-		rows = { }
-		key = ''
-		for i, row in enumerate(self.__headers.winfo_children()):
-			for j, child in enumerate(row.winfo_children()):
-				if j == 0 and type(child) is Entry:
-					key = child.get()
-					rows[key] = []
-				else:
-					if type(child) is Entry:
-						rows[key].append(child.get())
-					elif type(child) is Checkbutton:
-						rows[key].append(self.__pks[i].get())
-		return rows

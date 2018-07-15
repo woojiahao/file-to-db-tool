@@ -6,6 +6,7 @@ A GUI tool that reads a file and converts the file into a database table.
 2. sqlalchemy
 3. tkinter
 4. psycopg2
+5. sqlalchemy_utils
 
 ## Usage guide:
 1. Ensure that you have all the libraries used installed on your machine, if you don't install them with the following commands:
@@ -13,6 +14,7 @@ A GUI tool that reads a file and converts the file into a database table.
 pip install pandas
 pip install sqlalchemy
 pip install psycopg2
+pip install sqlalchemy_utils
 ```
 2. Download/Clone/Fork this repository to your local machine
 3. Navigate to the folder
