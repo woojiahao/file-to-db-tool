@@ -13,12 +13,44 @@ from convert_setup_window import ConvertSetupWindow
 # TODO: Add a field to specify the skip and fill values
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
+		"""
+		Window to allow the user to select a CSV file
+		:param master: Root of the layout
+		:param db_tool: Tool that maintains a connection to the database
+		"""
 		super().__init__(master=master)
 		self.__tool = db_tool
 		self.__master = master
 		self.__config__()
 
+
+	@staticmethod
+	def __is_file_empty__(filename: str):
+		"""
+		Checks if a file is empty
+		:param filename: File to check
+		:return: If the file is empty
+		"""
+		return path.getsize(filename) <= 0
+
+	@staticmethod
+	def __is_integer__(target: str):
+		"""
+		Checks if the target string can be parsed as an integer
+		:param target: Target string to test
+		:return: If the string is an integer
+		"""
+		try:
+			target = int(target)
+		except ValueError:
+			return False
+		return True
+
 	def __config__(self):
+		"""
+		Configure the window display
+		:return: None
+		"""
 		self.pack(padx=Settings.padding_x, pady=Settings.padding_y, fill=BOTH)
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
 
@@ -76,16 +108,33 @@ class FileSelectionWindow(Frame):
 		self.__convert_button.pack(side=RIGHT, padx=(Settings.padding_x, 0))
 
 	def __view_tables__(self):
+		"""
+		Displays the existing tables in the connected database
+		Triggered when menu item selected
+		:return: None
+		"""
 		tables = self.__tool.get_tables()
 		to_display = '\n'.join([key for key, value in tables.items()])
 		messagebox.showinfo('Existing Tables', to_display)
 
 	def __toggle_states__(self, state):
+		"""
+		Applies the same state across multiple widgets at once
+		:param state: State to be applied
+		:return: None
+		"""
 		self.__convert_button.config(state=state)
 		self.__skiprows_field.config(state=state)
 		self.__delimiter_field.config(state=state)
 
 	def __open_file__(self):
+		"""
+		Displays the file select dialog box to allow users to the select the file
+		Performs checking to see if the user cancelled the operation since that returns a blank file name
+		If the file name is blank, then keep the previous file
+		Otherwise, allow the user to customize the skiprows and delimtiers
+		:return: None
+		"""
 		previous_file = self.__file_name_field.get()
 
 		selected_file = filedialog.askopenfilename(
@@ -101,18 +150,15 @@ class FileSelectionWindow(Frame):
 			if previous_file == 'Nothing is selected':
 				self.__toggle_states__(DISABLED)
 
-
-	def __is_file_empty__(self, filename: str):
-		return path.getsize(filename) <= 0
-
-	def __is_integer__(self, target: str):
-		try:
-			target = int(target)
-		except ValueError:
-			return False
-		return True
-
 	def __convert_file__(self):
+		"""
+		Checks if the inputs for the skiprows and delimiter fields are empty, if they are, the defaults of 0 and , will
+		be used respectively
+		Checks if the file is empty as well as if the skiprows input is a valid integer
+		If successful, it will launch the ConvertSetupWindow to customize the table
+		Triggered on button click
+		:return: None
+		"""
 		filename = self.__file_name_field.get()
 		skiprows = self.__skiprows_field.get()
 		delimiter = self.__delimiter_field.get()
@@ -133,5 +179,12 @@ class FileSelectionWindow(Frame):
 				self.__launch_setup_window__(filename, skiprows, delimiter)
 
 	def __launch_setup_window__(self, filename: str, skiprows: int, delimiter: str):
+		"""
+		Closes the current window and opens ConvertSetupWindow
+		:param filename: File to convert
+		:param skiprows: Skiprows parameter for pandas
+		:param delimiter: Delimiter parameter for pandas
+		:return: None
+		"""
 		self.__master.destroy()
 		ConvertSetupWindow(Tk(), self.__tool, filename, skiprows, delimiter)
