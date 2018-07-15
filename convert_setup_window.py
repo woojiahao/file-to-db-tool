@@ -15,7 +15,9 @@ import utils
 # TODO: Add confirmation dialog before converting
 # TODO: Allow users to change the name of the columns
 class ConvertSetupWindow(Frame):
-	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
+	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str,
+				 skiprows: int, delimiter: str, missing_values: list,
+				 fill_value:str):
 		"""
 		This window will allow users to configure the table that will be created
 		Specify the data type of the column, the name of the column and whether the column will be a PK
@@ -24,11 +26,17 @@ class ConvertSetupWindow(Frame):
 		:param filename: Name of the file to convert
 		:param skiprows: Skip rows parameter for reading the CSV
 		:param delimiter: Delimiter that separates each entry in the CSV file
+		:param missing_values: Missing values to be replaced
+		:param fill_value: Values that replace missing values
 		"""
 		super().__init__(master=master)
 		self.__filename = filename
 		self.__skiprows = skiprows
 		self.__delimiter = delimiter
+		self.__missing_values = missing_values
+		self.__fill_value = fill_value
+
+		print(self.__missing_values)
 
 		self.__dtypes = [
 			'string', 'int64', 'float64',
@@ -39,6 +47,7 @@ class ConvertSetupWindow(Frame):
 		self.__tool = db_tool
 
 		self.__df: DataFrame = self.__open_file__()
+		print(self.__df)
 		self.__config__()
 
 	def __open_file__(self):
@@ -46,7 +55,8 @@ class ConvertSetupWindow(Frame):
 		Simple method that uses pandas to open the specified CSV file
 		:return: DataFrame of the target CSV file
 		"""
-		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter)
+		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter, na_values=self.__missing_values)
+		df = df.fillna(self.__fill_value)
 		return df
 
 	def __config__(self):
@@ -133,7 +143,7 @@ class ConvertSetupWindow(Frame):
 		tables = self.__tool.get_tables()
 		to_display = '\n'.join([key for key, value in tables.items()])
 		messagebox.showinfo('Existing Tables', to_display)
-		
+
 	def __reset_fields__(self):
 		pass
 

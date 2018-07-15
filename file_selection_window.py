@@ -8,8 +8,6 @@ from db_tool import DatabaseTool
 from settings import Settings
 import utils
 
-# TODO: Check the file types and convert accordingly
-# TODO: Before converting the file, allow the user to change the data types of the headers
 # TODO: Add a field to specify the skip and fill values
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
@@ -89,6 +87,32 @@ class FileSelectionWindow(Frame):
 									   state=DISABLED)
 		self.__delimiter_field.pack(fill=X)
 
+		# skip values
+		missing_values_frame = Frame(master=self)
+		missing_values_frame.pack(fill=X, pady=(Settings.padding_y, 0))
+		missing_values = Label(master=missing_values_frame, text='Missing Values:', font=Settings.font_small)
+		missing_values.pack(side=LEFT, padx=(0, Settings.padding_x))
+		self.__missing_values_str = StringVar()
+		self.__missing_values_str.set('na,-')
+		self.__missing_values_field = Entry(master=missing_values_frame,
+									   textvariable=self.__missing_values_str,
+									   font=Settings.font_small,
+									   state=DISABLED)
+		self.__missing_values_field.pack(fill=X)
+
+		# fill values
+		fill_values_frame = Frame(master=self)
+		fill_values_frame.pack(fill=X, pady=(Settings.padding_y, 0))
+		fill_values = Label(master=fill_values_frame, text='Fill Values:', font=Settings.font_small)
+		fill_values.pack(side=LEFT, padx=(0, Settings.padding_x))
+		self.__fill_values_str = StringVar()
+		self.__fill_values_str.set('0')
+		self.__fill_values_field = Entry(master=fill_values_frame,
+									   textvariable=self.__fill_values_str,
+									   font=Settings.font_small,
+									   state=DISABLED)
+		self.__fill_values_field.pack(fill=X)
+
 		button_frame = Frame(master=self)
 		button_frame.pack(fill=X, pady=(Settings.padding_y, 0))
 
@@ -126,6 +150,8 @@ class FileSelectionWindow(Frame):
 		self.__convert_button.config(state=state)
 		self.__skiprows_field.config(state=state)
 		self.__delimiter_field.config(state=state)
+		self.__missing_values_field.config(state=state)
+		self.__fill_values_field.config(state=state)
 
 	def __open_file__(self):
 		"""
@@ -162,6 +188,8 @@ class FileSelectionWindow(Frame):
 		filename = self.__file_name_field.get()
 		skiprows = self.__skiprows_field.get()
 		delimiter = self.__delimiter_field.get()
+		missing_values = self.__missing_values_field.get()
+		fill_value = self.__fill_values_field.get()
 
 		if skiprows.strip() == '' or delimiter.strip() == '':
 			messagebox.showerror('Empty inputs', 'Skip rows and delimiters should not be empty, using defaults of 0 and ,')
@@ -176,4 +204,6 @@ class FileSelectionWindow(Frame):
 									 'Skiprow: {} is not an integer, please select a valid integer'.format(skiprows))
 			else:
 				skiprows = int(skiprows)
-				utils.launch_setup(self.__master, self.__tool, filename, skiprows, delimiter)
+				utils.launch_setup(self.__master, self.__tool, filename,
+								   skiprows, delimiter, [val.strip() for val in missing_values.split(',')],
+								   fill_value)
