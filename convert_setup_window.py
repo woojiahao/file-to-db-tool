@@ -9,10 +9,9 @@ from db_tool import DatabaseTool
 from settings import Settings
 import utils
 
-# TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Fix the table name field and label not being on the same line
-# TODO: Add confirmation dialog before converting
 # TODO: Allow users to change the name of the columns
+# TODO: Add the resetting of the fields
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str,
 				 skiprows: int, delimiter: str, missing_values: list,
