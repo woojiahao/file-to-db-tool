@@ -1,6 +1,4 @@
-import pandas as pd
 from pandas import DataFrame
-from pandas.tests.io.parser import skiprows
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import database_exists
