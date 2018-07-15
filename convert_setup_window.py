@@ -19,7 +19,7 @@ class ConvertSetupWindow(Frame):
 		This window will allow users to configure the table that will be created
 		Specify the data type of the column, the name of the column and whether the column will be a PK
 		:param master: Root of the layout
-		:param db_tool: Connection to the database
+		:param db_tool: Tool that maintains a connection to the database
 		:param filename: Name of the file to convert
 		:param skiprows: Skip rows parameter for reading the CSV
 		:param delimiter: Delimiter that separates each entry in the CSV file
