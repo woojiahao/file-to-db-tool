@@ -8,6 +8,7 @@ from settings import Settings
 # TODO: Check if the table name is blank, if it is, warn the user to specify one otherwise the file name will be used as the table name
 # TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Add checking if the intended PKs can be used as PKs
+# TODO: Fix the table name field and label not being on the same line
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
 		super().__init__(master=master)
@@ -31,8 +32,10 @@ class ConvertSetupWindow(Frame):
 
 		# filename
 		Label(master=self, text='Converting:', font=Settings.font_medium).pack(anchor=W)
-		filename = Label(master=self, text=self.__filename, font=Settings.font_small)
-		filename.pack(pady=(0, Settings.padding_y), anchor=W)
+		filename_str = StringVar()
+		filename_str.set(self.__filename)
+		filename_field = Entry(master=self, textvariable=filename_str, font=Settings.font_small, state=DISABLED)
+		filename_field.pack(pady=(0, Settings.padding_y), anchor=W, fill=X)
 
 		# table name
 		tablename_frame = Frame(master=self)
