@@ -10,7 +10,6 @@ from settings import Settings
 
 # TODO: Check if the table name is blank, if it is, warn the user to specify one otherwise the file name will be used as the table name
 # TODO: Give users the ability to change the skiprows and delimiter
-# TODO: Add checking if the intended PKs can be used as PKs
 # TODO: Fix the table name field and label not being on the same line
 # TODO: Add field heading
 class ConvertSetupWindow(Frame):
@@ -47,8 +46,8 @@ class ConvertSetupWindow(Frame):
 		tablename = Label(master=tablename_frame, text='Table Name:', font=Settings.font_small)
 		tablename.pack(side=LEFT, padx=(0, Settings.padding_x))
 		tablename_str = StringVar()
-		tablename_field = Entry(master=tablename_frame, textvariable=tablename_str, font=Settings.font_small)
-		tablename_field.pack(fill=X, pady=(0, Settings.padding_y))
+		self.__tablename_field = Entry(master=tablename_frame, textvariable=tablename_str, font=Settings.font_small)
+		self.__tablename_field.pack(fill=X, pady=(0, Settings.padding_y))
 
 		# table headers
 		self.__headers = Frame(master=self)
@@ -93,18 +92,20 @@ class ConvertSetupWindow(Frame):
 		pass
 
 	def __convert__(self):
-		headers = self.__get_all_values__()
-		if not self.__check_pk__(headers):
-			messagebox.showerror('No Primary Key', 'You did not select any primary keys')
-			return
+		table_name = self.__tablename_field.get()
+		if table_name.strip() == '':
+			messagebox.showerror('Empty table name', 'You did not specify a table name!')
 		else:
-			if not self.__is_valid_pk__(headers):
-				messagebox.showerror('Invalid Primary Key',
-									 'The primary key(s) you selected is invalid as there are repeating values')
+			headers = self.__get_all_values__()
+			if not self.__check_pk__(headers):
+				messagebox.showerror('No Primary Key', 'You did not select any primary keys')
 			else:
-				pass
+				if not self.__is_valid_pk__(headers):
+					messagebox.showerror('Invalid Primary Key',
+										 'The primary key(s) you selected is invalid as there are repeating values')
+				else:
+					self.__tool.convert(self.__df, headers)
 
-	# if len of the normal data == len of the distinct data then PK
 	def __is_valid_pk__(self, headers: dict):
 		pks = [key for key, value in headers.items() if value[1]]
 		filtered = self.__df[pks[0]].map(str)

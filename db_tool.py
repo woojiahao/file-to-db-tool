@@ -1,4 +1,6 @@
 import pandas as pd
+from pandas import DataFrame
+from pandas.tests.io.parser import skiprows
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import database_exists
@@ -30,6 +32,7 @@ class DatabaseTool:
 		tables = meta.tables
 		return tables
 
-	def convert(self, filename: str, skiprows: int, delimiter: str):
-		df = pd.read_csv(filename, skiprows=skiprows, delimiter=delimiter)
+	def convert(self, df: DataFrame, settings: dict):
 		print(df)
+		print(settings)
+		pass
