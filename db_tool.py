@@ -113,15 +113,6 @@ class DatabaseTool:
 			return False
 		return True
 
-	def drop_tables(self):
-		"""
-		Drops all the tables in the database
-		:return: None
-		"""
-		self.__meta.reflect(bind=self.__engine)
-		for table in reversed(self.__meta.sorted_tables):
-			table.drop(bind=self.__engine)
-
 	def convert(self, df: DataFrame, tablename: str, settings: dict):
 		"""
 		Converts a CSV file to a database table
