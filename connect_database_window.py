@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 from db_tool import DatabaseTool
 from settings import Settings
-from main_window import MainWindow
+from file_selection_window import FileSelectionWindow
 
 
 class ConnectDatabaseWindow(Frame):
@@ -85,5 +85,5 @@ class ConnectDatabaseWindow(Frame):
 
 	def __launch_main_window__(self):
 		self.__master.destroy()
-		MainWindow(Tk(), self.__tool)
+		FileSelectionWindow(Tk(), self.__tool)
 

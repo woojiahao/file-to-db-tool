@@ -6,7 +6,9 @@ from db_tool import DatabaseTool
 from settings import Settings
 
 # TODO: Check the file types and convert accordingly
-class MainWindow(Frame):
+# TODO: Before converting the file, allow the user to change the data types of the headers
+# TODO: Check if the file is empty after the user tries to convert the file
+class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
 		super().__init__(master=master)
 		self.__tool = db_tool
@@ -28,30 +30,6 @@ class MainWindow(Frame):
 									   state=DISABLED)
 		self.__file_name_field.pack(fill='x', pady=(0, Settings.padding_y))
 
-		# skiprows
-		skiprows_frame = Frame(master=self)
-		skiprows_frame.pack(side=TOP, fill=X)
-		skiprows = Label(master=skiprows_frame, text='Skip Rows:', font=Settings.font_small)
-		skiprows.pack(side=LEFT, padx=(0, Settings.padding_x))
-		self.__skiprows_str = StringVar()
-		self.__skiprows_str.set(0)
-		self.__skiprows_field = Entry(master=skiprows_frame, textvariable=self.__skiprows_str, font=Settings.font_small,
-									  state=DISABLED)
-		self.__skiprows_field.pack(fill=X)
-
-		# delimiter
-		delimiter_frame = Frame(master=self)
-		delimiter_frame.pack(fill=X, pady=(Settings.padding_y, 0))
-		delimiter = Label(master=delimiter_frame, text='Delimiter:', font=Settings.font_small)
-		delimiter.pack(side=LEFT, padx=(0, Settings.padding_x))
-		self.__delimiter_str = StringVar()
-		self.__delimiter_str.set(',')
-		self.__delimiter_field = Entry(master=delimiter_frame,
-									   textvariable=self.__delimiter_str,
-									   font=Settings.font_small,
-									   state=DISABLED)
-		self.__delimiter_field.pack(fill=X)
-
 		button_frame = Frame(master=self)
 		button_frame.pack(fill=X, pady=(Settings.padding_y, 0))
 
@@ -60,7 +38,7 @@ class MainWindow(Frame):
 										 text='Open File',
 										 font=Settings.font_small,
 										 command=self.__open_file__)
-		self.__open_file_button.grid(column=0)
+		self.__open_file_button.pack(side=LEFT)
 
 		# convert file
 		self.__convert_button = Button(master=button_frame,
@@ -68,7 +46,7 @@ class MainWindow(Frame):
 									   font=Settings.font_small,
 									   state=DISABLED,
 									   command=self.__convert_file__)
-		self.__convert_button.grid(row=0, column=1, padx=(Settings.padding_x, 0))
+		self.__convert_button.pack(side=RIGHT, padx=(Settings.padding_x, 0))
 
 	def __view_tables__(self):
 		tables = self.__tool.get_tables()
@@ -77,8 +55,6 @@ class MainWindow(Frame):
 
 	def __toggle_states__(self, state):
 		self.__convert_button.config(state=state)
-		self.__delimiter_field.config(state=state)
-		self.__skiprows_field.config(state=state)
 
 	def __open_file__(self):
 		previous_file = self.__file_name_field.get()
@@ -99,9 +75,4 @@ class MainWindow(Frame):
 
 	def __convert_file__(self):
 		filename = self.__file_name_field.get()
-		skiprows = int(self.__skiprows_field.get())
-		delimiter = self.__delimiter_field.get()
-
-		self.__tool.convert(filename, skiprows, delimiter)
-
 
