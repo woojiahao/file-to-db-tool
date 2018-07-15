@@ -10,6 +10,7 @@ from convert_setup_window import ConvertSetupWindow
 
 # TODO: Check the file types and convert accordingly
 # TODO: Before converting the file, allow the user to change the data types of the headers
+# TODO: Add a field to specify the skip and fill values
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
 		super().__init__(master=master)
