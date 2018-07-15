@@ -58,7 +58,7 @@ class ConvertSetupWindow(Frame):
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
 
 		menu = Menu(master=self)
-		menu.add_command(label='Drop All Tables', command=self.__drop_tables__)
+		menu.add_command(label='View Tables', command=self.__display_tables__)
 		self.__master.config(menu=menu)
 
 		# filename
@@ -124,15 +124,16 @@ class ConvertSetupWindow(Frame):
 			primary_key_check.grid(row=0, column=2)
 			self.__pks.append(pk)
 
-	def __drop_tables__(self):
+	def __display_tables__(self):
 		"""
-		Drops all of the tables in the database
-		Triggered on menu item press
+		Displays the existing tables in the connected database
+		Triggered when menu item selected
 		:return: None
 		"""
-		self.__tool.drop_tables()
-		messagebox.showinfo('All tables dropped', 'All tables have been dropped successfully!')
-
+		tables = self.__tool.get_tables()
+		to_display = '\n'.join([key for key, value in tables.items()])
+		messagebox.showinfo('Existing Tables', to_display)
+		
 	def __reset_fields__(self):
 		pass
 
@@ -209,7 +210,11 @@ class ConvertSetupWindow(Frame):
 					messagebox.showerror('Invalid Primary Key',
 										 'The primary key(s) you selected is invalid as there are repeating values')
 				else:
-					messagebox.showinfo('Converting file to table!',
-										'The file: {} is currently being converted to a table!'.format(self.__filename))
-					self.__tool.convert(self.__df, table_name, headers)
-					utils.launch_file_selection(self.__master, self.__tool)
+					if self.__tool.has_table(table_name):
+						messagebox.showerror('Table name used', 'The table name: {} is already used'.format(table_name))
+					else:
+						messagebox.showinfo('Converting file to table!',
+											'The file: {} is currently being converted to a table!'.format(
+												self.__filename))
+						self.__tool.convert(self.__df, table_name, headers)
+						utils.launch_file_selection(self.__master, self.__tool)

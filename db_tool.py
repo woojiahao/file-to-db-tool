@@ -107,7 +107,11 @@ class DatabaseTool:
 
 	def has_table(self, tablename: str):
 		self.__meta.reflect(bind=self.__engine)
-		print(self.__meta.tables[tablename])
+		try:
+			self.__meta.tables[tablename]
+		except KeyError:
+			return False
+		return True
 
 	def drop_tables(self):
 		"""

@@ -56,7 +56,6 @@ class FileSelectionWindow(Frame):
 
 		menu = Menu(self)
 		menu.add_command(label='View Tables', command=self.__view_tables__)
-		menu.add_command(label='Drop All Tables', command=self.__drop_tables__)
 		self.__master.config(menu=menu)
 
 		# file name
@@ -117,15 +116,6 @@ class FileSelectionWindow(Frame):
 		tables = self.__tool.get_tables()
 		to_display = '\n'.join([key for key, value in tables.items()])
 		messagebox.showinfo('Existing Tables', to_display)
-
-	def __drop_tables__(self):
-		"""
-		Drops all of the tables in the database
-		Triggered on menu item press
-		:return: None
-		"""
-		self.__tool.drop_tables()
-		messagebox.showinfo('All tables dropped', 'All tables have been dropped successfully!')
 
 	def __toggle_states__(self, state):
 		"""
