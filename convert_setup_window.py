@@ -104,6 +104,8 @@ class ConvertSetupWindow(Frame):
 					messagebox.showerror('Invalid Primary Key',
 										 'The primary key(s) you selected is invalid as there are repeating values')
 				else:
+					messagebox.showinfo('Converting file to table!',
+										'The file: {} is currently being converted to a table!'.format(self.__filename))
 					self.__tool.convert(self.__df, table_name, headers)
 
 	def __is_valid_pk__(self, headers: dict):
