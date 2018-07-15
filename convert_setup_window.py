@@ -1,14 +1,18 @@
 from tkinter import *
+from tkinter import messagebox
+
 import pandas as pd
 from pandas import DataFrame
 
 from db_tool import DatabaseTool
 from settings import Settings
 
+
 # TODO: Check if the table name is blank, if it is, warn the user to specify one otherwise the file name will be used as the table name
 # TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Add checking if the intended PKs can be used as PKs
 # TODO: Fix the table name field and label not being on the same line
+# TODO: Add field heading
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
 		super().__init__(master=master)
@@ -47,25 +51,90 @@ class ConvertSetupWindow(Frame):
 		tablename_field.pack(fill=X, pady=(0, Settings.padding_y))
 
 		# table headers
+		self.__headers = Frame(master=self)
+		self.__headers.pack(fill=X)
 		self.__populate_table_headers__()
 
-	def __populate_table_headers__(self):
-		for col_name, col_type in zip(self.__df.columns.values, self.__df.dtypes):
-			print('col_name: {}\ncol_type: {}\n'.format(col_name, col_type))
+		button_frame = Frame(master=self)
+		button_frame.pack(anchor=E)
 
-			inline_frame = Frame(master=self)
+		# reset button
+		reset_button = Button(master=button_frame, text='Reset', font=Settings.font_small,
+							  command=self.__reset_fields__)
+		reset_button.grid(row=0, column=0, padx=(0, Settings.padding_x))
+
+		# convert button
+		convert_button = Button(master=button_frame, text='Convert', font=Settings.font_small, command=self.__convert__)
+		convert_button.grid(row=0, column=1)
+
+	def __populate_table_headers__(self):
+		self.__pks = []
+		for col_name, col_type in zip(self.__df.columns.values, self.__df.dtypes):
+			inline_frame = Frame(master=self.__headers)
 			inline_frame.pack(fill=X, pady=(0, Settings.padding_y))
 
 			col_name_str = StringVar()
 			col_name_str.set(col_name)
-			col_name_field = Entry(master=inline_frame, textvariable=col_name_str, font=Settings.font_small)
+			col_name_field = Entry(master=inline_frame, textvariable=col_name_str, font=Settings.font_small, state=DISABLED)
 			col_name_field.grid(row=0, column=0, padx=(0, Settings.padding_x))
 
 			col_type_str = StringVar()
-			col_type_str.set(col_type)
+			col_type_str.set(col_type if col_type != 'object' else 'string')
 			col_type_field = Entry(master=inline_frame, textvariable=col_type_str, font=Settings.font_small)
 			col_type_field.grid(row=0, column=1, padx=(0, Settings.padding_x))
 
-			primary_key_check = Checkbutton(master=inline_frame, text='PK', font=Settings.font_small, variable=BooleanVar())
+			pk = BooleanVar()
+			primary_key_check = Checkbutton(master=inline_frame, text='PK', font=Settings.font_small,
+											variable=pk)
 			primary_key_check.grid(row=0, column=2)
+			self.__pks.append(pk)
 
+	def __reset_fields__(self):
+		pass
+
+	def __convert__(self):
+		headers = self.__get_all_values__()
+		if not self.__check_pk__(headers):
+			messagebox.showerror('No Primary Key', 'You did not select any primary keys')
+			return
+		else:
+			if not self.__is_valid_pk__(headers):
+				messagebox.showerror('Invalid Primary Key',
+									 'The primary key(s) you selected is invalid as there are repeating values')
+			else:
+				pass
+
+	# if len of the normal data == len of the distinct data then PK
+	def __is_valid_pk__(self, headers: dict):
+		pks = [key for key, value in headers.items() if value[1]]
+		filtered = self.__df[pks[0]].map(str)
+
+		for i in range(1, len(pks)):
+			filtered += self.__df[pks[i]].map(str)
+
+		length = len(filtered)
+		d_length = len(set(filtered))
+
+		return length == d_length
+
+	@staticmethod
+	def __check_pk__(headers: dict):
+		has_pk = False
+		for value in headers.values():
+			has_pk |= value[1]
+		return has_pk
+
+	def __get_all_values__(self):
+		rows = { }
+		key = ''
+		for i, row in enumerate(self.__headers.winfo_children()):
+			for j, child in enumerate(row.winfo_children()):
+				if j == 0 and type(child) is Entry:
+					key = child.get()
+					rows[key] = []
+				else:
+					if type(child) is Entry:
+						rows[key].append(child.get())
+					elif type(child) is Checkbutton:
+						rows[key].append(self.__pks[i].get())
+		return rows
