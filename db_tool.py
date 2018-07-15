@@ -1,8 +1,10 @@
 from pandas import DataFrame
-from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date
+import pandas as pd
+from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists
+from numpy import ndarray
 
 # TODO: Populate the tables with the corresponding data
 class DatabaseTool:
@@ -49,15 +51,20 @@ class DatabaseTool:
 			dtype_selected = value[0]
 			data_type = None
 			if dtype_selected == 'int64':
+				df[key] = pd.to_numeric(df[key], downcast='integer')
 				data_type = Integer
 			elif dtype_selected == 'string':
+				df[key] = df[key].astype(str)
 				max_length = df[key].map(len).max()
 				data_type = String(max_length)
 			elif dtype_selected == 'float64':
+				df[key] = pd.to_numeric(df[key], downcast='float')
 				data_type = Float
 			elif dtype_selected == 'datetime64':
+				df[key] = pd.to_datetime(df[key])
 				data_type = Date
 			elif dtype_selected == 'bool':
+				df[key] = df[key].astype(bool)
 				data_type = Boolean
 
 			attr_dict[key] = Column(data_type, primary_key=value[1])
@@ -77,7 +84,15 @@ class DatabaseTool:
 		self.__meta.create_all(self.__engine)
 
 	def __populate_table__(self, tablename: str, df: DataFrame):
-		pass
+		self.__meta.reflect(bind=self.__engine)
+		table: Table = self.__meta.tables[tablename]
+		print(type(table))
+		with self.__engine.connect() as conn:
+			for row in df.values:
+				print(row)
+				ins = table.insert(values=ndarray.tolist(row))
+				conn.execute(ins)
+
 
 	def has_database(self):
 		"""

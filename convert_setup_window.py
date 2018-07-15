@@ -34,8 +34,6 @@ class ConvertSetupWindow(Frame):
 		self.__missing_values = missing_values
 		self.__fill_value = fill_value
 
-		print(self.__missing_values)
-
 		self.__dtypes = [
 			'string', 'int64', 'float64',
 			'bool', 'datetime64'
@@ -45,7 +43,7 @@ class ConvertSetupWindow(Frame):
 		self.__tool = db_tool
 
 		self.__df: DataFrame = self.__open_file__()
-		print(self.__df)
+		print(self.__df.values)
 		self.__config__()
 
 	def __open_file__(self):
