@@ -1,11 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
 
+import utils
 from db_tool import DatabaseTool
 from settings import Settings
-import utils
 
-# TODO: Remove the default database string
+
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
@@ -27,6 +27,7 @@ class ConnectDatabaseWindow(Frame):
 
 		def key(event):
 			self.__connect_to_db__()
+
 		self.__master.bind('<Return>', key)
 
 		# username
@@ -65,7 +66,6 @@ class ConnectDatabaseWindow(Frame):
 		database = Label(master=self, text='Database:', font=Settings.font_small)
 		database.grid(row=4, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__database_str = StringVar()
-		self.__database_str.set('timezonebot')
 		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
 		self.__database_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
 
@@ -94,7 +94,8 @@ class ConnectDatabaseWindow(Frame):
 			self.__tool = DatabaseTool(username, password, host, port, database)
 			if not self.__tool.has_database():
 				messagebox.showerror('Invalid database chosen',
-									 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(database))
+									 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(
+										 database))
 			else:
 				messagebox.showinfo('Successful connection',
 									'You are now connected to the database: {}'.format(database))

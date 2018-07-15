@@ -1,12 +1,12 @@
-from pandas import DataFrame
 import pandas as pd
+from numpy import ndarray
+from pandas import DataFrame
 from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists
-from numpy import ndarray
 
-# TODO: Populate the tables with the corresponding data
+
 class DatabaseTool:
 	def __init__(self, username: str, password: str, host: str, port: str, database: str):
 		"""
@@ -92,7 +92,6 @@ class DatabaseTool:
 				print(row)
 				ins = table.insert(values=ndarray.tolist(row))
 				conn.execute(ins)
-
 
 	def has_database(self):
 		"""

@@ -5,9 +5,10 @@ from tkinter.ttk import Combobox
 import pandas as pd
 from pandas import DataFrame
 
+import utils
 from db_tool import DatabaseTool
 from settings import Settings
-import utils
+
 
 # TODO: Fix the table name field and label not being on the same line
 # TODO: Allow users to change the name of the columns
@@ -15,7 +16,7 @@ import utils
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str,
 				 skiprows: int, delimiter: str, missing_values: list,
-				 fill_value:str):
+				 fill_value: str):
 		"""
 		This window will allow users to configure the table that will be created
 		Specify the data type of the column, the name of the column and whether the column will be a PK
@@ -51,7 +52,8 @@ class ConvertSetupWindow(Frame):
 		Simple method that uses pandas to open the specified CSV file
 		:return: DataFrame of the target CSV file
 		"""
-		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter, na_values=self.__missing_values)
+		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter,
+						 na_values=self.__missing_values)
 		df = df.fillna(self.__fill_value)
 		return df
 
@@ -115,7 +117,8 @@ class ConvertSetupWindow(Frame):
 
 			col_name_str = StringVar()
 			col_name_str.set(col_name)
-			col_name_field = Entry(master=inline_frame, textvariable=col_name_str, font=Settings.font_small, state=DISABLED)
+			col_name_field = Entry(master=inline_frame, textvariable=col_name_str, font=Settings.font_small,
+								   state=DISABLED)
 			col_name_field.grid(row=0, column=0, padx=(0, Settings.padding_x))
 
 			col_type_selection = Combobox(master=inline_frame,

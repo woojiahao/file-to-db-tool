@@ -1,12 +1,12 @@
+from os import path
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 
-from os import path
-
+import utils
 from db_tool import DatabaseTool
 from settings import Settings
-import utils
+
 
 class FileSelectionWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool):
@@ -19,7 +19,6 @@ class FileSelectionWindow(Frame):
 		self.__tool = db_tool
 		self.__master = master
 		self.__config__()
-
 
 	@staticmethod
 	def __is_file_empty__(filename: str):
@@ -94,9 +93,9 @@ class FileSelectionWindow(Frame):
 		self.__missing_values_str = StringVar()
 		self.__missing_values_str.set('na,-')
 		self.__missing_values_field = Entry(master=missing_values_frame,
-									   textvariable=self.__missing_values_str,
-									   font=Settings.font_small,
-									   state=DISABLED)
+											textvariable=self.__missing_values_str,
+											font=Settings.font_small,
+											state=DISABLED)
 		self.__missing_values_field.pack(fill=X)
 
 		# fill values
@@ -107,9 +106,9 @@ class FileSelectionWindow(Frame):
 		self.__fill_values_str = StringVar()
 		self.__fill_values_str.set('0')
 		self.__fill_values_field = Entry(master=fill_values_frame,
-									   textvariable=self.__fill_values_str,
-									   font=Settings.font_small,
-									   state=DISABLED)
+										 textvariable=self.__fill_values_str,
+										 font=Settings.font_small,
+										 state=DISABLED)
 		self.__fill_values_field.pack(fill=X)
 
 		button_frame = Frame(master=self)
@@ -191,7 +190,8 @@ class FileSelectionWindow(Frame):
 		fill_value = self.__fill_values_field.get()
 
 		if skiprows.strip() == '' or delimiter.strip() == '':
-			messagebox.showerror('Empty inputs', 'Skip rows and delimiters should not be empty, using defaults of 0 and ,')
+			messagebox.showerror('Empty inputs',
+								 'Skip rows and delimiters should not be empty, using defaults of 0 and ,')
 			skiprows = '0'
 			delimiter = ','
 
