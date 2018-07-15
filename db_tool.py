@@ -16,6 +16,14 @@ class DatabaseTool:
 	def __create_connection_string__(username: str, password: str, host: str, port: str, database: str):
 		return 'postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, database)
 
+	@staticmethod
+	def __create_attr_dict__(tablename: str, headers: dict):
+		attr_dict = { '__tablename__': tablename }
+		return attr_dict
+
+	def __create_table__(self, attr_dict: dict):
+		pass
+
 	def has_database(self):
 		return database_exists(self.__connection_string)
 
@@ -29,7 +37,5 @@ class DatabaseTool:
 		tables = self.__meta.tables
 		return tables
 
-	def convert(self, df: DataFrame, settings: dict):
-		print(df)
-		print(settings)
-		pass
+	def convert(self, df: DataFrame, tablename: str, settings: dict):
+		self.__create_table__(self.__create_attr_dict__(tablename, settings))

@@ -104,7 +104,7 @@ class ConvertSetupWindow(Frame):
 					messagebox.showerror('Invalid Primary Key',
 										 'The primary key(s) you selected is invalid as there are repeating values')
 				else:
-					self.__tool.convert(self.__df, headers)
+					self.__tool.convert(self.__df, table_name, headers)
 
 	def __is_valid_pk__(self, headers: dict):
 		pks = [key for key, value in headers.items() if value[1]]
