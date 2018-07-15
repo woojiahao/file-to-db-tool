@@ -24,12 +24,11 @@ class DatabaseTool:
 	def open_engine(self):
 		self.__engine = create_engine(self.__connection_string)
 		self.__Base = declarative_base(bind=self.__engine)
-		self.__meta = MetaData()
+		self.__meta = self.__Base.metadata
 
 	def get_tables(self):
-		meta = MetaData()
-		meta.reflect(bind=self.__engine)
-		tables = meta.tables
+		self.__meta.reflect(bind=self.__engine)
+		tables = self.__meta.tables
 		return tables
 
 	def convert(self, df: DataFrame, settings: dict):
