@@ -5,7 +5,8 @@ from db_tool import DatabaseTool
 from settings import Settings
 from file_selection_window import FileSelectionWindow
 
-
+# TODO: Remove the default database string
+# TODO: Add keybinding 'Enter' to connect
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		super().__init__(master=master)
@@ -54,6 +55,7 @@ class ConnectDatabaseWindow(Frame):
 		database = Label(master=self, text='Database:', font=Settings.font_small)
 		database.grid(row=4, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__database_str = StringVar()
+		self.__database_str.set('timezonebot')
 		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
 		self.__database_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
 
