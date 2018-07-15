@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter.ttk import Combobox
 
 import pandas as pd
 from pandas import DataFrame
@@ -29,6 +30,11 @@ class ConvertSetupWindow(Frame):
 		self.__filename = filename
 		self.__skiprows = skiprows
 		self.__delimiter = delimiter
+
+		self.__dtypes = [
+			'string', 'int64', 'float64',
+			'bool', 'datetime64'
+		]
 
 		self.__master = master
 		self.__tool = db_tool
@@ -102,10 +108,12 @@ class ConvertSetupWindow(Frame):
 			col_name_field = Entry(master=inline_frame, textvariable=col_name_str, font=Settings.font_small, state=DISABLED)
 			col_name_field.grid(row=0, column=0, padx=(0, Settings.padding_x))
 
-			col_type_str = StringVar()
-			col_type_str.set(col_type if col_type != 'object' else 'string')
-			col_type_field = Entry(master=inline_frame, textvariable=col_type_str, font=Settings.font_small)
-			col_type_field.grid(row=0, column=1, padx=(0, Settings.padding_x))
+			col_type_selection = Combobox(master=inline_frame,
+										  value=self.__dtypes,
+										  font=Settings.font_small,
+										  state="readonly")
+			col_type_selection.set(col_type if col_type != 'object' else 'string')
+			col_type_selection.grid(row=0, column=1, padx=(0, Settings.padding_x))
 
 			pk = BooleanVar()
 			primary_key_check = Checkbutton(master=inline_frame, text='PK', font=Settings.font_small,
@@ -163,7 +171,8 @@ class ConvertSetupWindow(Frame):
 					key = child.get()
 					rows[key] = []
 				else:
-					if type(child) is Entry:
+					if type(child) is Entry or type(child) is Combobox:
+						print(child.get())
 						rows[key].append(child.get())
 					elif type(child) is Checkbutton:
 						rows[key].append(self.__pks[i].get())
