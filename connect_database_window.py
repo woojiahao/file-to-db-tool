@@ -9,11 +9,19 @@ from file_selection_window import FileSelectionWindow
 # TODO: Add keybinding 'Enter' to connect
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
+		"""
+		Window to allow users to connect to a database
+		:param master: Root of the layout
+		"""
 		super().__init__(master=master)
 		self.__master = master
 		self.__config__()
 
 	def __config__(self):
+		"""
+		Configure the window display
+		:return: None
+		"""
 		self.__master.resizable(0, 0)
 
 		self.grid(padx=Settings.padding_x, pady=Settings.padding_y)
@@ -64,6 +72,13 @@ class ConnectDatabaseWindow(Frame):
 		connect.grid(row=5, column=1, sticky=E)
 
 	def __connect_to_db__(self):
+		"""
+		Attempts to connect to the database with the input credentials
+		Checks if the database field is empty, or invalid
+		If there is a successful connection, then forward to the FileSelectionWindow
+		Triggered on button click
+		:return: None
+		"""
 		username = self.__username_field.get()
 		password = self.__password_field.get()
 		host = self.__host_field.get()
@@ -84,6 +99,10 @@ class ConnectDatabaseWindow(Frame):
 				self.__launch_main_window__()
 
 	def __launch_main_window__(self):
+		"""
+		Closes the current window and opens the FileSelectionWindow
+		:return: None
+		"""
 		self.__master.destroy()
 		FileSelectionWindow(Tk(), self.__tool)
 
