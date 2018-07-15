@@ -13,6 +13,7 @@ from settings import Settings
 # TODO: Add field heading
 # TODO: Add confirmation dialog before converting
 # TODO: Allow users to change the name of the columns
+# TODO: Convert the data type field to a drop down
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
 		"""
