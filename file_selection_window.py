@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 from db_tool import DatabaseTool
 from settings import Settings
+from convert_setup_window import ConvertSetupWindow
 
 # TODO: Check the file types and convert accordingly
 # TODO: Before converting the file, allow the user to change the data types of the headers
@@ -75,4 +76,6 @@ class FileSelectionWindow(Frame):
 
 	def __convert_file__(self):
 		filename = self.__file_name_field.get()
+		self.__master.destroy()
+		ConvertSetupWindow(Tk(), self.__tool, filename)
 
