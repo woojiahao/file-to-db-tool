@@ -1,6 +1,7 @@
 from pandas import DataFrame
 from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists
 
 # TODO: Populate the tables with the corresponding data
@@ -19,6 +20,7 @@ class DatabaseTool:
 		self.__engine = None
 		self.__Base = None
 		self.__meta: MetaData = None
+		self.__Session = None
 
 	@staticmethod
 	def __create_connection_string__(username: str, password: str, host: str, port: str, database: str):
@@ -71,6 +73,7 @@ class DatabaseTool:
 		:return: None
 		"""
 		table = type(attr_dict['__tablename__'], (self.__Base,), attr_dict)
+		table.extend_existing = True
 		self.__meta.create_all(self.__engine)
 
 	def __populate_table__(self, tablename: str, df: DataFrame):
@@ -91,6 +94,7 @@ class DatabaseTool:
 		self.__engine = create_engine(self.__connection_string)
 		self.__Base = declarative_base(bind=self.__engine)
 		self.__meta = self.__Base.metadata
+		self.__Session = sessionmaker(bind=self.__engine)
 
 	def get_tables(self):
 		"""
@@ -100,6 +104,19 @@ class DatabaseTool:
 		self.__meta.reflect(bind=self.__engine)
 		tables = self.__meta.tables
 		return tables
+
+	def has_table(self, tablename: str):
+		self.__meta.reflect(bind=self.__engine)
+		print(self.__meta.tables[tablename])
+
+	def drop_tables(self):
+		"""
+		Drops all the tables in the database
+		:return: None
+		"""
+		self.__meta.reflect(bind=self.__engine)
+		for table in reversed(self.__meta.sorted_tables):
+			table.drop(bind=self.__engine)
 
 	def convert(self, df: DataFrame, tablename: str, settings: dict):
 		"""

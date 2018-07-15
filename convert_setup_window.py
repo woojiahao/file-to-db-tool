@@ -7,14 +7,13 @@ from pandas import DataFrame
 
 from db_tool import DatabaseTool
 from settings import Settings
-
+import utils
 
 # TODO: Give users the ability to change the skiprows and delimiter
 # TODO: Fix the table name field and label not being on the same line
 # TODO: Add field heading
 # TODO: Add confirmation dialog before converting
 # TODO: Allow users to change the name of the columns
-# TODO: Convert the data type field to a drop down
 class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str, skiprows: int, delimiter: str):
 		"""
@@ -57,6 +56,10 @@ class ConvertSetupWindow(Frame):
 		"""
 		self.pack(padx=Settings.padding_x, pady=Settings.padding_y, fill=BOTH)
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
+
+		menu = Menu(master=self)
+		menu.add_command(label='Drop All Tables', command=self.__drop_tables__)
+		self.__master.config(menu=menu)
 
 		# filename
 		Label(master=self, text='Converting:', font=Settings.font_medium).pack(anchor=W)
@@ -120,6 +123,15 @@ class ConvertSetupWindow(Frame):
 											variable=pk)
 			primary_key_check.grid(row=0, column=2)
 			self.__pks.append(pk)
+
+	def __drop_tables__(self):
+		"""
+		Drops all of the tables in the database
+		Triggered on menu item press
+		:return: None
+		"""
+		self.__tool.drop_tables()
+		messagebox.showinfo('All tables dropped', 'All tables have been dropped successfully!')
 
 	def __reset_fields__(self):
 		pass
@@ -200,5 +212,4 @@ class ConvertSetupWindow(Frame):
 					messagebox.showinfo('Converting file to table!',
 										'The file: {} is currently being converted to a table!'.format(self.__filename))
 					self.__tool.convert(self.__df, table_name, headers)
-
-
+					utils.launch_file_selection(self.__master, self.__tool)

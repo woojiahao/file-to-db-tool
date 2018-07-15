@@ -6,7 +6,7 @@ from os import path
 
 from db_tool import DatabaseTool
 from settings import Settings
-from convert_setup_window import ConvertSetupWindow
+import utils
 
 # TODO: Check the file types and convert accordingly
 # TODO: Before converting the file, allow the user to change the data types of the headers
@@ -56,6 +56,7 @@ class FileSelectionWindow(Frame):
 
 		menu = Menu(self)
 		menu.add_command(label='View Tables', command=self.__view_tables__)
+		menu.add_command(label='Drop All Tables', command=self.__drop_tables__)
 		self.__master.config(menu=menu)
 
 		# file name
@@ -117,6 +118,15 @@ class FileSelectionWindow(Frame):
 		to_display = '\n'.join([key for key, value in tables.items()])
 		messagebox.showinfo('Existing Tables', to_display)
 
+	def __drop_tables__(self):
+		"""
+		Drops all of the tables in the database
+		Triggered on menu item press
+		:return: None
+		"""
+		self.__tool.drop_tables()
+		messagebox.showinfo('All tables dropped', 'All tables have been dropped successfully!')
+
 	def __toggle_states__(self, state):
 		"""
 		Applies the same state across multiple widgets at once
@@ -176,15 +186,4 @@ class FileSelectionWindow(Frame):
 									 'Skiprow: {} is not an integer, please select a valid integer'.format(skiprows))
 			else:
 				skiprows = int(skiprows)
-				self.__launch_setup_window__(filename, skiprows, delimiter)
-
-	def __launch_setup_window__(self, filename: str, skiprows: int, delimiter: str):
-		"""
-		Closes the current window and opens ConvertSetupWindow
-		:param filename: File to convert
-		:param skiprows: Skiprows parameter for pandas
-		:param delimiter: Delimiter parameter for pandas
-		:return: None
-		"""
-		self.__master.destroy()
-		ConvertSetupWindow(Tk(), self.__tool, filename, skiprows, delimiter)
+				utils.launch_setup(self.__master, self.__tool, filename, skiprows, delimiter)

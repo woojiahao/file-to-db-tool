@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 from db_tool import DatabaseTool
 from settings import Settings
-from file_selection_window import FileSelectionWindow
+import utils
 
 # TODO: Remove the default database string
 # TODO: Add keybinding 'Enter' to connect
@@ -97,13 +97,4 @@ class ConnectDatabaseWindow(Frame):
 				messagebox.showinfo('Successful connection',
 									'You are now connected to the database: {}'.format(database))
 				self.__tool.open_engine()
-				self.__launch_main_window__()
-
-	def __launch_main_window__(self):
-		"""
-		Closes the current window and opens the FileSelectionWindow
-		:return: None
-		"""
-		self.__master.destroy()
-		FileSelectionWindow(Tk(), self.__tool)
-
+				utils.launch_file_selection(self.__master, self.__tool)
