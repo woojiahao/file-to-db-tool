@@ -1,19 +1,13 @@
 # file-to-db-tool
 A GUI tool that reads a file and converts the file into a database table.
 
-## Libraries used:
-1. pandas
-2. sqlalchemy
-3. tkinter
-4. psycopg2
-5. sqlalchemy_utils
-
 ## Database set-up guide 
 This repository is able to run both on a local machine and on a server hosted on a service like Heroku. This can be done since the program allows you to specify the connection string information beforehand, thus allowing you to customize the manner in which you will be able to connect to.
 
 ![alt text](https://github.com/woojiahao/file-to-db-tool/blob/master/screenshots/connect_db.PNG "Connection Screen")
 
 The following guides will be for both running this application on a local machine and running on a server, hosted on Heroku.
+
 **Note! Heroku's free tier can only support up till 10,000 rows in the database. If you wish to convert `.csv` files with more than 10,000 rows of data, you must either, a) purchase a higher plan, b) use a local database instead**
 
 ### Local machine:
@@ -23,7 +17,7 @@ The following guides will be for both running this application on a local machin
 4. Then, specify the host name (`localhost`), database name (whatever you chose), username (`postgres` is the default), password (`root` is the default) and port number (`5432` is the default) in the tool's connect to database window.
 5. Press on connect and you can now freely use the tool.
 
-### Set-up guide (for Heroku):
+### Heroku:
 1. Create a free tier [Heroku account](https://signup.heroku.com/?c=70130000001x9jFAAQ).
 2. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
 3. Create a GitHub repository, private or not, it does not matter. 
@@ -37,6 +31,13 @@ The following guides will be for both running this application on a local machin
 11. Take note of the **host name**, **username**, **password** and **port number** and **database**.
 15. Run the tool using `python launch.py` and populate the fields in the connect screen with the credentials previously mentioned.
 16. Press `Connect` and you should be able to access the database and convert `.csv` files now.
+
+## Libraries used:
+1. pandas
+2. sqlalchemy
+3. tkinter
+4. psycopg2
+5. sqlalchemy_utils
 
 ## Usage guide:
 1. Ensure that you have all the libraries used installed on your machine, if you don't install them with the following commands:
