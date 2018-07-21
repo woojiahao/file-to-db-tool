@@ -7,6 +7,9 @@ from db_tool import DatabaseTool
 from settings import Settings
 
 # todo: Allow the users to change the default credentials used such as editing a json file and reading that json file on startup whenever the user changes the settings
+# todo: give the user the ability to change connections whilst they are in the application
+# todo: allow users to specify a whole connection string separately without specifying the individual credentials
+# todo: allow for an option for ssl connection mode	
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
