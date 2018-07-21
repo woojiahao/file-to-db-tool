@@ -31,11 +31,10 @@ git clone https://github.com/woojiahao/file-to-db-tool
 cd file-to-db-tool
 python launch.py
 ```
-5. When the program has launched, select the dialect of SQL you will be using (See [Available SQL Dialects](https://github.com/woojiahao/file-to-db-tool#currently-supported-sql-dialects)).
+5. When the program has launched, select the dialect of SQL you will be using (See [Available SQL Dialects](https://github.com/woojiahao/file-to-db-tool#available-sql-dialects)).
 6. By selecting them, it will automaticaly fill in the credentials needed for a localhost conenction to that database, feel free to edit the credentials if you need to conenct to an external database.
 7. Enter the database name that you wish to connect to and press `Connect`.
 8. Select a supported file (See [Supported File Types](https://github.com/woojiahao/file-to-db-tool#supported-file-types)) and convert.
-
 
 ## Available SQL Dialects:
 1. PostgreSQL
