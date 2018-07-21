@@ -6,7 +6,7 @@ import utils
 from db_tool import DatabaseTool
 from settings import Settings
 
-
+# todo: Allow the users to change the default credentials used such as editing a json file and reading that json file on startup whenever the user changes the settings
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
