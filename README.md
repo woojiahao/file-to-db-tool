@@ -1,20 +1,9 @@
-# file-to-db-tool
+# File to Database Table Conversion Tool
 A GUI tool that reads a file and converts the file into a database table.
 
-## Database set-up guide 
-This tool is able to run the code off any database, be it locally or on another server, you simply have to specify these details at the connect screen.
-
-### Currently supported SQL Dialects:
-1. PostgreSQL
+This tool emphasises on flexibility, allowing you to connect to any database by specifying the needed credentials.
 
 ![alt text](https://github.com/woojiahao/file-to-db-tool/blob/master/screenshots/connect_db.PNG "Connection Screen")
-
-### Local machine:
-1. Install [PostgreSQL](https://www.postgresql.org/download/windows/) onto your local machine and include the program `pgAdmin4`.
-2. Next, create a new database instance, naming it anything, using `CREATE DATABASE <anything>`
-3. After that, run the tool via `python launch.py`.
-4. Then, specify the host name (`localhost`), database name (whatever you chose), username (`postgres` is the default), password (`root` is the default) and port number (`5432` is the default) in the tool's connect to database window.
-5. Press on connect and you can now freely use the tool.
 
 ## Libraries used:
 1. pandas
@@ -42,11 +31,19 @@ git clone https://github.com/woojiahao/file-to-db-tool
 cd file-to-db-tool
 python launch.py
 ```
+5. When the program has launched, select the dialect of SQL you will be using (See [Available SQL Dialects](https://github.com/woojiahao/file-to-db-tool#currently-supported-sql-dialects)).
+6. By selecting them, it will automaticaly fill in the credentials needed for a localhost conenction to that database, feel free to edit the credentials if you need to conenct to an external database.
+7. Enter the database name that you wish to connect to and press `Connect`.
+8. Select a supported file (See [Supported File Types](https://github.com/woojiahao/file-to-db-tool#supported-file-types)) and convert.
+
+
+## Available SQL Dialects:
+1. PostgreSQL
+2. MySQL
 
 ## Supported file types:
 * `.csv`
 
 ## TODO:
-1. Allow the user the dialect of SQL that they want to use, MySQL vs PostgreSQL
-2. Allow the user to enter a connection string rather than breaking everything up themselves
-3. Add screenshots for the instructions
+1. Allow the user to enter a connection string rather than breaking everything up themselves
+2. Add screenshots for the instructions
