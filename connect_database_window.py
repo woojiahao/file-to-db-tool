@@ -108,10 +108,20 @@ class ConnectDatabaseWindow(Frame):
 		:return: None
 		"""
 		selected = self.__dialects_selection.get()
-		if selected == 'mysql':
-			pass
-		elif selected == 'postgresql':
-			pass
+		credentials = self.__available_dialects[selected]
+		print(credentials)
+		self.__set_credentials__(credentials)
+
+	def __set_credentials__(self, credentials: dict):
+		self.__set_text__(self.__username_field, credentials['username'])
+		self.__set_text__(self.__password_field, credentials['password'])
+		self.__set_text__(self.__host_field, credentials['host'])
+		self.__set_text__(self.__port_field, credentials['port'])
+
+	@staticmethod
+	def __set_text__(entry: Entry, text: str):
+		entry.delete(0, END)
+		entry.insert(0, text)
 
 	def __connect_to_db__(self):
 		"""
