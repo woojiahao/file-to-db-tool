@@ -21,7 +21,8 @@ This tool is able to run the code off any database, be it locally or on another 
 2. sqlalchemy
 3. tkinter
 4. psycopg2
-5. sqlalchemy_utils
+5. pymysql
+6. sqlalchemy_utils
 
 ## Usage guide:
 1. Ensure that you have all the libraries used installed on your machine, if you don't install them with the following commands:
@@ -30,6 +31,7 @@ pip install pandas
 pip install sqlalchemy
 pip install psycopg2
 pip install sqlalchemy_utils
+pip install pymysql
 ```
 2. Download/Clone/Fork this repository to your local machine
 3. Navigate to the folder
