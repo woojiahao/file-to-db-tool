@@ -15,6 +15,10 @@ This tool emphasises on flexibility, allowing you to connect to any database by 
 
 ## Usage guide
 ### Basic use:
+The tool is located in the `tool` folder of the project. 
+
+This is a usage guide for a regular set of operations in the application.
+
 1. Ensure that you have all the libraries used installed on your machine, if you don't install them with the following commands:
 ```bash
 pip install pandas
@@ -29,7 +33,7 @@ pip install pymysql
 ```bash
 cd Desktop
 git clone https://github.com/woojiahao/file-to-db-tool
-cd file-to-db-tool
+cd file-to-db-tool/tool
 python launch.py
 ```
 5. When the program has launched, select the dialect of SQL you will be using (See [Available SQL Dialects](https://github.com/woojiahao/file-to-db-tool#available-sql-dialects)).
