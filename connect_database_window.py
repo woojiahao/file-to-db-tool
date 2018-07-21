@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter.ttk import Combobox
 
 import utils
 from db_tool import DatabaseTool
 from settings import Settings
 
-
+# TODO: Include support for multiple SQL dialects
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
