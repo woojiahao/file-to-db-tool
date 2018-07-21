@@ -7,7 +7,6 @@ from db_tool import DatabaseTool
 from settings import Settings
 
 
-# TODO: Include support for multiple SQL dialects
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
 		"""
@@ -91,9 +90,9 @@ class ConnectDatabaseWindow(Frame):
 		dialects = Label(master=self, text='Dialect:', font=Settings.font_small)
 		dialects.grid(row=5, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__dialects_selection = Combobox(master=self,
-									  values=list(self.__available_dialects.keys()),
-									  font=Settings.font_small,
-									  state="readonly")
+											 values=list(self.__available_dialects.keys()),
+											 font=Settings.font_small,
+											 state="readonly")
 		self.__dialects_selection.set(list(self.__available_dialects.keys())[0])
 		self.__dialects_selection.bind('<<ComboboxSelected>>', self.__cbox_item_selected__)
 		self.__dialects_selection.grid(row=5, column=1, pady=(0, Settings.padding_y))
