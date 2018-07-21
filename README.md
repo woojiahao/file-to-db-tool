@@ -13,7 +13,8 @@ This tool emphasises on flexibility, allowing you to connect to any database by 
 5. pymysql
 6. sqlalchemy_utils
 
-## Usage guide:
+## Usage guide
+### Basic use:
 1. Ensure that you have all the libraries used installed on your machine, if you don't install them with the following commands:
 ```bash
 pip install pandas
@@ -36,7 +37,12 @@ python launch.py
 7. Enter the database name that you wish to connect to and press `Connect`.
 8. Select a supported file (See [Supported File Types](https://github.com/woojiahao/file-to-db-tool#supported-file-types)) and convert.
 
-## Available SQL Dialects:
+### Editing credentials:
+Sometimes, you might want to change the default credentials that get loaded in when you change the SQL dialect, the tool now supports the reading of a `config.json` file that holds all of the credentials.
+
+To edit the credentials, navigate into `config` folder and edit the `config.json` file to suit the credentials that you want.
+
+## Available SQL dialects:
 1. PostgreSQL
 2. MySQL
 
