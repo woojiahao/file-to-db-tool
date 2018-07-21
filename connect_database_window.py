@@ -6,6 +6,7 @@ import utils
 from db_tool import DatabaseTool
 from settings import Settings
 
+
 # TODO: Include support for multiple SQL dialects
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
@@ -70,9 +71,47 @@ class ConnectDatabaseWindow(Frame):
 		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
 		self.__database_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
 
+		# select dialect drop down
+		self.__available_dialects = {
+			'postgresql': {
+				'username': 'postgres',
+				'password': 'root',
+				'host': 'localhost',
+				'port': 5432,
+			},
+			'mysql': {
+				'username': 'root',
+				'password': '12345',
+				'host': 'localhost',
+				'port': 3306,
+			}
+		}
+		dialects = Label(master=self, text='Dialect:', font=Settings.font_small)
+		dialects.grid(row=5, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__dialects_selection = Combobox(master=self,
+									  values=list(self.__available_dialects.keys()),
+									  font=Settings.font_small,
+									  state="readonly")
+		self.__dialects_selection.set(list(self.__available_dialects.keys())[0])
+		self.__dialects_selection.bind('<<ComboboxSelected>>', self.__cbox_item_selected__)
+		self.__dialects_selection.grid(row=5, column=1, pady=(0, Settings.padding_y))
+
 		# connect
 		connect = Button(master=self, text='Connect', font=Settings.font_small, command=self.__connect_to_db__)
-		connect.grid(row=5, column=1, sticky=E)
+		connect.grid(row=6, column=1, sticky=E)
+
+	def __cbox_item_selected__(self, event):
+		"""
+		Changes the inputs of each of the text fields depending on the selected dialect so as to ensure that they
+		conform to the default values
+		:param event: Combobox Selection event
+		:return: None
+		"""
+		selected = self.__dialects_selection.get()
+		if selected == 'mysql':
+			pass
+		elif selected == 'postgresql':
+			pass
 
 	def __connect_to_db__(self):
 		"""
