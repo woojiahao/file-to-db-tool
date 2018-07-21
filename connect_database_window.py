@@ -78,12 +78,14 @@ class ConnectDatabaseWindow(Frame):
 				'password': 'root',
 				'host': 'localhost',
 				'port': 5432,
+				'connector': 'psycopg2'
 			},
 			'mysql': {
 				'username': 'root',
 				'password': '12345',
 				'host': 'localhost',
 				'port': 3306,
+				'connector': 'pymysql'
 			}
 		}
 		dialects = Label(master=self, text='Dialect:', font=Settings.font_small)
@@ -143,12 +145,14 @@ class ConnectDatabaseWindow(Frame):
 		port = self.__port_field.get()
 		database = self.__database_field.get()
 		dialect = self.__dialects_selection.get()
+		dialect_str = '{}+{}'.format(dialect, self.__available_dialects[dialect]['connector'])
+		print(dialect_str)
 
 		if database == '':
 			messagebox.showerror('No database specified',
 								 'Please specify a database name to connect to')
 		else:
-			self.__tool = DatabaseTool(username, password, host, port, database, dialect)
+			self.__tool = DatabaseTool(username, password, host, port, database, dialect_str)
 			if not self.__tool.has_database():
 				messagebox.showerror('Invalid database chosen',
 									 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(
