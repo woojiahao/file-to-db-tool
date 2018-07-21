@@ -5,9 +5,9 @@ from tkinter.ttk import Combobox
 import pandas as pd
 from pandas import DataFrame
 
-import utils
-from db_tool import DatabaseTool
-from settings import Settings
+from tool import utils
+from tool.db_tool import DatabaseTool
+from tool.settings import Settings
 
 
 # TODO: Fix the table name field and label not being on the same line

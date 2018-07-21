@@ -3,9 +3,9 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 
-import utils
-from db_tool import DatabaseTool
-from settings import Settings
+from tool import utils
+from tool.db_tool import DatabaseTool
+from tool.settings import Settings
 
 
 class FileSelectionWindow(Frame):

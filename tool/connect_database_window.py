@@ -3,9 +3,9 @@ from tkinter import messagebox
 from tkinter.ttk import Combobox
 import json
 
-import utils
-from db_tool import DatabaseTool
-from settings import Settings
+from tool import utils
+from tool.db_tool import DatabaseTool
+from tool.settings import Settings
 
 # todo: allow users the ability to edit the config.json file within the application instead of having to manually change it
 # todo: give the user the ability to change connections whilst they are in the application
