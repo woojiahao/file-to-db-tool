@@ -1,5 +1,6 @@
 # File to Database Table Conversion Tool
 A GUI tool that reads a file and converts the file into a database table.
+
 This tool emphasises on flexibility, allowing you to connect to any database by specifying the needed credentials.
 
 Blog post of what I learnt from making it: [Making a CSV to Database Tool](https://woojiahao.github.io/blog/2018-07-15/making-a-csv-to-database-tool)
