@@ -120,6 +120,12 @@ class ConnectDatabaseWindow(Frame):
 
 	@staticmethod
 	def __set_text__(entry: Entry, text: str):
+		"""
+		Sets the text of an entry to the target
+		:param entry: Entry to set text for
+		:param text: Text to be set in the entry
+		:return: None
+		"""
 		entry.delete(0, END)
 		entry.insert(0, text)
 
@@ -136,6 +142,7 @@ class ConnectDatabaseWindow(Frame):
 		host = self.__host_field.get()
 		port = self.__port_field.get()
 		database = self.__database_field.get()
+		dialect = self.__dialects_selection.get()
 
 		if database == '':
 			messagebox.showerror('No database specified',

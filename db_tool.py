@@ -8,7 +8,7 @@ from sqlalchemy_utils import database_exists
 
 
 class DatabaseTool:
-	def __init__(self, username: str, password: str, host: str, port: str, database: str):
+	def __init__(self, username: str, password: str, host: str, port: str, database: str, dialect: str):
 		"""
 		Maintains a connection to the database and provides database-related functions
 		:param username: Username for connection string
@@ -16,16 +16,17 @@ class DatabaseTool:
 		:param host: Host for connection string
 		:param port: Port number for connection string
 		:param database: Database name for connection string
+		:param dialect: Dialect of SQL to be used
 		"""
 		self.database = database
-		self.__connection_string = self.__create_connection_string__(username, password, host, port, database)
+		self.__connection_string = self.__create_connection_string__(username, password, host, port, database, dialect)
 		self.__engine = None
 		self.__Base = None
 		self.__meta: MetaData = None
 		self.__Session = None
 
 	@staticmethod
-	def __create_connection_string__(username: str, password: str, host: str, port: str, database: str):
+	def __create_connection_string__(username: str, password: str, host: str, port: str, database: str, dialect: str):
 		"""
 		Creates the connection string from the input variables
 		:param username: Username for connection string
@@ -33,9 +34,10 @@ class DatabaseTool:
 		:param host: Host for connection string
 		:param port: Port number for connection string
 		:param database: Database name for connection string
+		:param dialect: Dialect of SQL to be userd
 		:return: Connection string in proper format
 		"""
-		return 'postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, database)
+		return '{}://{}:{}@{}:{}/{}'.format(dialect, username, password, host, port, database)
 
 	@staticmethod
 	def __create_attr_dict__(tablename: str, headers: dict, df: DataFrame):
