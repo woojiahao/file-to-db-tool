@@ -1,0 +1,16 @@
+{
+  "postgresql": {
+    "username": "postgres",
+    "password": "root",
+    "host": "localhost",
+    "port": 5432,
+    "connector": "psycopg2"
+  },
+  "mysql": {
+    "username": "root",
+    "password": "12345",
+    "host": "localhost",
+    "port": 3306,
+    "connector": "pymysql"
+  }
+}

@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
+import json
 
 import utils
 from db_tool import DatabaseTool
 from settings import Settings
 
-# todo: Allow the users to change the default credentials used such as editing a json file and reading that json file on startup whenever the user changes the settings
+# todo: allow users the ability to edit the config.json file within the application instead of having to manually change it
 # todo: give the user the ability to change connections whilst they are in the application
 # todo: allow users to specify a whole connection string separately without specifying the individual credentials
 # todo: allow for an option for ssl connection mode
@@ -34,75 +35,70 @@ class ConnectDatabaseWindow(Frame):
 
 		self.__master.bind('<Return>', key)
 
-		# username
-		username = Label(master=self, text='Username:', font=Settings.font_small)
-		username.grid(row=0, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__username_str = StringVar()
-		self.__username_str.set('postgres')
-		self.__username_field = Entry(master=self, textvariable=self.__username_str, font=Settings.font_small)
-		self.__username_field.grid(row=0, column=1, pady=(0, Settings.padding_y))
-
-		# password
-		password = Label(master=self, text='Password:', font=Settings.font_small)
-		password.grid(row=1, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__password_str = StringVar()
-		self.__password_str.set('root')
-		self.__password_field = Entry(master=self, textvariable=self.__password_str, show='*', font=Settings.font_small)
-		self.__password_field.grid(row=1, column=1, pady=(0, Settings.padding_y))
-
-		# host
-		host = Label(master=self, text='Host:', font=Settings.font_small)
-		host.grid(row=2, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__host_str = StringVar()
-		self.__host_str.set('localhost')
-		self.__host_field = Entry(master=self, textvariable=self.__host_str, font=Settings.font_small)
-		self.__host_field.grid(row=2, column=1, pady=(0, Settings.padding_y))
-
-		# port
-		port = Label(master=self, text='Port:', font=Settings.font_small)
-		port.grid(row=3, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__port_str = StringVar()
-		self.__port_str.set('5432')
-		self.__port_field = Entry(master=self, textvariable=self.__port_str, font=Settings.font_small)
-		self.__port_field.grid(row=3, column=1, pady=(0, Settings.padding_y))
-
-		# database
-		database = Label(master=self, text='Database:', font=Settings.font_small)
-		database.grid(row=4, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
-		self.__database_str = StringVar()
-		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
-		self.__database_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
-
 		# select dialect drop down
-		self.__available_dialects = {
-			'postgresql': {
-				'username': 'postgres',
-				'password': 'root',
-				'host': 'localhost',
-				'port': 5432,
-				'connector': 'psycopg2'
-			},
-			'mysql': {
-				'username': 'root',
-				'password': '12345',
-				'host': 'localhost',
-				'port': 3306,
-				'connector': 'pymysql'
-			}
-		}
+		self.__available_dialects = self.__read_configuration__()
 		dialects = Label(master=self, text='Dialect:', font=Settings.font_small)
-		dialects.grid(row=5, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		dialects.grid(row=0, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__dialects_selection = Combobox(master=self,
 											 values=list(self.__available_dialects.keys()),
 											 font=Settings.font_small,
 											 state="readonly")
 		self.__dialects_selection.set(list(self.__available_dialects.keys())[0])
 		self.__dialects_selection.bind('<<ComboboxSelected>>', self.__cbox_item_selected__)
-		self.__dialects_selection.grid(row=5, column=1, pady=(0, Settings.padding_y))
+		self.__dialects_selection.grid(row=0, column=1, pady=(0, Settings.padding_y))
+
+		# username
+		username = Label(master=self, text='Username:', font=Settings.font_small)
+		username.grid(row=1, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__username_str = StringVar()
+		self.__username_str.set(self.__available_dialects['postgresql']['username'])
+		self.__username_field = Entry(master=self, textvariable=self.__username_str, font=Settings.font_small)
+		self.__username_field.grid(row=1, column=1, pady=(0, Settings.padding_y))
+
+		# password
+		password = Label(master=self, text='Password:', font=Settings.font_small)
+		password.grid(row=2, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__password_str = StringVar()
+		self.__password_str.set(self.__available_dialects['postgresql']['password'])
+		self.__password_field = Entry(master=self, textvariable=self.__password_str, show='*', font=Settings.font_small)
+		self.__password_field.grid(row=2, column=1, pady=(0, Settings.padding_y))
+
+		# host
+		host = Label(master=self, text='Host:', font=Settings.font_small)
+		host.grid(row=3, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__host_str = StringVar()
+		self.__host_str.set(self.__available_dialects['postgresql']['host'])
+		self.__host_field = Entry(master=self, textvariable=self.__host_str, font=Settings.font_small)
+		self.__host_field.grid(row=3, column=1, pady=(0, Settings.padding_y))
+
+		# port
+		port = Label(master=self, text='Port:', font=Settings.font_small)
+		port.grid(row=4, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__port_str = StringVar()
+		self.__port_str.set(self.__available_dialects['postgresql']['port'])
+		self.__port_field = Entry(master=self, textvariable=self.__port_str, font=Settings.font_small)
+		self.__port_field.grid(row=4, column=1, pady=(0, Settings.padding_y))
+
+		# database
+		database = Label(master=self, text='Database:', font=Settings.font_small)
+		database.grid(row=5, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
+		self.__database_str = StringVar()
+		self.__database_field = Entry(master=self, textvariable=self.__database_str, font=Settings.font_small)
+		self.__database_field.grid(row=5, column=1, pady=(0, Settings.padding_y))
 
 		# connect
 		connect = Button(master=self, text='Connect', font=Settings.font_small, command=self.__connect_to_db__)
 		connect.grid(row=6, column=1, sticky=E)
+
+	@staticmethod
+	def __read_configuration__():
+		"""
+		Reads the configuration file for the dialect defaults and loads them
+		:return: Dictionary of the defaults with dialects
+		"""
+		with open('config/config.json') as f:
+			dialects = json.load(f)
+		return dialects
 
 	def __cbox_item_selected__(self, event):
 		"""
