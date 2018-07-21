@@ -1,12 +1,16 @@
+from tkinter import messagebox
+
 import pandas as pd
 from numpy import ndarray
 from pandas import DataFrame
 from sqlalchemy import create_engine, MetaData, Column, String, Integer, Float, Boolean, Date, Table
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists
 
 
+# todo: fix the bug where if the user enters false credentials, the console will spit out error messages for invalid credentials (temporary fix of error messagebox used)
 class DatabaseTool:
 	def __init__(self, username: str, password: str, host: str, port: str, database: str, dialect: str):
 		"""
@@ -100,6 +104,11 @@ class DatabaseTool:
 		Checks if the database in the connection string is a valid name
 		:return: Whether the database exists
 		"""
+		try:
+			database_exists(self.__connection_string)
+		except OperationalError:
+			messagebox.showerror('Invalid credentials', 'The credentials you have entered are invalid, please check to ensure that they are valid ones before proceeding!')
+
 		return database_exists(self.__connection_string)
 
 	def open_engine(self):
