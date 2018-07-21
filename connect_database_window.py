@@ -148,7 +148,7 @@ class ConnectDatabaseWindow(Frame):
 			messagebox.showerror('No database specified',
 								 'Please specify a database name to connect to')
 		else:
-			self.__tool = DatabaseTool(username, password, host, port, database)
+			self.__tool = DatabaseTool(username, password, host, port, database, dialect)
 			if not self.__tool.has_database():
 				messagebox.showerror('Invalid database chosen',
 									 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(
