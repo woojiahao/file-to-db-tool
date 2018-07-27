@@ -1,32 +1,24 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Combobox
-import json
+import re
 
 from tool import utils
+from tool.connection_string_popup import ConnectionStringPopup
 from tool.db_tool import DatabaseTool
 from tool.settings import Settings
-from tool.connection_string_popup import ConnectionStringPopup
+
 
 # todo: allow users the ability to edit the config.json file within the application instead of having to manually change it
-# todo: give the user the ability to change connections whilst they are in the application
 # todo: allow users to specify a whole connection string separately without specifying the individual credentials
 # todo: allow for an option for ssl connection mode
 class ConnectDatabaseWindow(Frame):
 	def __init__(self, master: Tk):
-		"""
-		Window to allow users to connect to a database
-		:param master: Root of the layout
-		"""
 		super().__init__(master=master)
 		self.__master = master
 		self.__config__()
 
 	def __config__(self):
-		"""
-		Configure the window display
-		:return: None
-		"""
 		self.__master.resizable(0, 0)
 		self.grid(padx=Settings.padding_x, pady=Settings.padding_y)
 		self.winfo_toplevel().title('Connect to database')
@@ -41,7 +33,7 @@ class ConnectDatabaseWindow(Frame):
 		self.__master.config(menu=menu)
 
 		# select dialect drop down
-		self.__available_dialects = self.__read_configuration__()
+		self.__available_dialects = utils.read_configuration_file('config.json')
 		dialects = Label(master=self, text='Dialect:', font=Settings.font_small)
 		dialects.grid(row=0, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__dialects_selection = Combobox(master=self,
@@ -95,59 +87,23 @@ class ConnectDatabaseWindow(Frame):
 		connect = Button(master=self, text='Connect', font=Settings.font_small, command=self.__connect_to_db__)
 		connect.grid(row=6, column=1, sticky=E)
 
-	@staticmethod
-	def __read_configuration__():
-		"""
-		Reads the configuration file for the dialect defaults and loads them
-		:return: Dictionary of the defaults with dialects
-		"""
-		with open('config/config.json') as f:
-			dialects = json.load(f)
-		return dialects
-
-
 	def __specify_connection_string__(self):
 		popup = ConnectionStringPopup(self)
 		conn_str = popup.conn_str
-		print(conn_str)
+		self.__connect_to_db__(conn_str=conn_str)
 
 	def __cbox_item_selected__(self, event):
-		"""
-		Changes the inputs of each of the text fields depending on the selected dialect so as to ensure that they
-		conform to the default values
-		:param event: Combobox Selection event
-		:return: None
-		"""
 		selected = self.__dialects_selection.get()
 		credentials = self.__available_dialects[selected]
-		print(credentials)
 		self.__set_credentials__(credentials)
 
 	def __set_credentials__(self, credentials: dict):
-		self.__set_text__(self.__username_field, credentials['username'])
-		self.__set_text__(self.__password_field, credentials['password'])
-		self.__set_text__(self.__host_field, credentials['host'])
-		self.__set_text__(self.__port_field, credentials['port'])
+		utils.set_entry_text(self.__username_field, credentials['username'])
+		utils.set_entry_text(self.__password_field, credentials['password'])
+		utils.set_entry_text(self.__host_field, credentials['host'])
+		utils.set_entry_text(self.__port_field, credentials['port'])
 
-	@staticmethod
-	def __set_text__(entry: Entry, text: str):
-		"""
-		Sets the text of an entry to the target
-		:param entry: Entry to set text for
-		:param text: Text to be set in the entry
-		:return: None
-		"""
-		entry.delete(0, END)
-		entry.insert(0, text)
-
-	def __connect_to_db__(self):
-		"""
-		Attempts to connect to the database with the input credentials
-		Checks if the database field is empty, or invalid
-		If there is a successful connection, then forward to the FileSelectionWindow
-		Triggered on button click
-		:return: None
-		"""
+	def __get_connection_details__(self):
 		username = self.__username_field.get()
 		password = self.__password_field.get()
 		host = self.__host_field.get()
@@ -155,19 +111,48 @@ class ConnectDatabaseWindow(Frame):
 		database = self.__database_field.get()
 		dialect = self.__dialects_selection.get()
 		dialect_str = '{}+{}'.format(dialect, self.__available_dialects[dialect]['connector'])
-		print(dialect_str)
 
-		if database == '':
-			messagebox.showerror('No database specified',
-								 'Please specify a database name to connect to')
-		else:
-			self.__tool = DatabaseTool(username, password, host, port, database, dialect_str)
-			if not self.__tool.has_database():
-				messagebox.showerror('Invalid database chosen',
-									 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(
-										 database))
+		return {
+			'username': username,
+			'password': password,
+			'host': host,
+			'port': port,
+			'database': database,
+			'dialect_str': dialect_str
+		}
+
+	def __connect_to_db__(self, conn_str: str = None):
+		connection: str = ''
+		if conn_str is not None:
+			pattern = '^\w+:\/\/\w+:\w+\@\w+:\d+\/\w+$'
+			if re.match(pattern, conn_str) is None:
+				messagebox.showerror('Invalid connection string format',
+									 'The connection string you entered: {} is in an invalid format, please try again'.format(conn_str))
 			else:
-				messagebox.showinfo('Successful connection',
-									'You are now connected to the database: {}'.format(database))
-				self.__tool.open_engine()
-				utils.launch_file_selection(self.__master, self.__tool)
+				connection = conn_str
+		else:
+			conn_details = self.__get_connection_details__()
+
+			if conn_details['database'] == '':
+				messagebox.showerror('No database specified',
+									 'Please specify a database name to connect to')
+			else:
+				connection = utils.create_connection_string(
+					conn_details['username'],
+					conn_details['password'],
+					conn_details['host'],
+					conn_details['port'],
+					conn_details['database'],
+					conn_details['dialect_str'])
+
+		self.__tool = DatabaseTool(connection)
+		database_name = utils.extract_db_from_conn_str(connection)
+		if not self.__tool.has_database():
+			messagebox.showerror('Invalid database chosen',
+								 'The database {} chosen does not exist or the connection details are incorrect.\nRemember that the database name is case-sensitive'.format(
+									 database_name))
+		else:
+			messagebox.showinfo('Successful connection',
+								'You are now connected to the database: {}'.format(database_name))
+			self.__tool.open_engine()
+			utils.launch_file_selection(self.__master, self.__tool)
