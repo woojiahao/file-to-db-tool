@@ -1,6 +1,6 @@
 from tkinter import Tk
 
-from tool.connect_database_window import ConnectDatabaseWindow
+from connect_database_window import ConnectDatabaseWindow
 
 if __name__ == '__main__':
 	root = Tk()
