@@ -28,7 +28,6 @@ pip install sqlalchemy
 pip install psycopg2
 pip install sqlalchemy_utils
 pip install pymysql
-pip install ttkSimpleDialog
 ```
 2. Download/Clone/Fork this repository to your local machine
 3. Navigate to the folder

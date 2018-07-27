@@ -6,6 +6,7 @@ import json
 from tool import utils
 from tool.db_tool import DatabaseTool
 from tool.settings import Settings
+from tool.connection_string_popup import ConnectionStringPopup
 
 # todo: allow users the ability to edit the config.json file within the application instead of having to manually change it
 # todo: give the user the ability to change connections whilst they are in the application
@@ -34,6 +35,10 @@ class ConnectDatabaseWindow(Frame):
 			self.__connect_to_db__()
 
 		self.__master.bind('<Return>', key)
+
+		menu = Menu(master=self)
+		menu.add_command(label='Specify Connection String', command=self.__specify_connection_string__)
+		self.__master.config(menu=menu)
 
 		# select dialect drop down
 		self.__available_dialects = self.__read_configuration__()
@@ -99,6 +104,12 @@ class ConnectDatabaseWindow(Frame):
 		with open('config/config.json') as f:
 			dialects = json.load(f)
 		return dialects
+
+
+	def __specify_connection_string__(self):
+		popup = ConnectionStringPopup(self)
+		conn_str = popup.conn_str
+		print(conn_str)
 
 	def __cbox_item_selected__(self, event):
 		"""
