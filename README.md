@@ -11,10 +11,9 @@ Blog post of what I learnt from making it: [Making a CSV to Database Tool](https
 1. pandas
 2. sqlalchemy
 3. tkinter
-4. ttkSimpleDialog
-5. psycopg2
-6. pymysql
-7. sqlalchemy_utils
+4. psycopg2
+5. pymysql
+6. sqlalchemy_utils
 
 ## Usage guide
 ### Basic use:
