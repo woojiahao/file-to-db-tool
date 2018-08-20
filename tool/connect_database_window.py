@@ -48,7 +48,11 @@ class ConnectDatabaseWindow(Frame):
 		username = Label(master=self, text='Username:', font=Settings.font_small)
 		username.grid(row=1, sticky=W, padx=(0, Settings.padding_x), pady=(0, Settings.padding_y))
 		self.__username_str = StringVar()
-		self.__username_str.set(self.__available_dialects['postgresql']['username'])
+		sigFile.readLines(Charset.forName("UTF-8")).filter { !it.startsWith(';') || it == "\n" }
+        for (setting in settingsList) {
+            if(setting.startsWith("discord_token")) discordApiToken = setting.split(": ")[1]
+            if(setting.startsWith("discord_token")) discordApiToken = setting.split(": ")[1]
+            if(setting.starelf.__username_str.set(self.__available_dialects['postgresql']['username'])
 		self.__username_field = Entry(master=self, textvariable=self.__username_str, font=Settings.font_small)
 		self.__username_field.grid(row=1, column=1, pady=(0, Settings.padding_y))
 

@@ -17,17 +17,6 @@ class ConvertSetupWindow(Frame):
 	def __init__(self, master: Tk, db_tool: DatabaseTool, filename: str,
 				 skiprows: int, delimiter: str, missing_values: list,
 				 fill_value: str):
-		"""
-		This window will allow users to configure the table that will be created
-		Specify the data type of the column, the name of the column and whether the column will be a PK
-		:param master: Root of the layout
-		:param db_tool: Tool that maintains a connection to the database
-		:param filename: Name of the file to convert
-		:param skiprows: Skip rows parameter for reading the CSV
-		:param delimiter: Delimiter that separates each entry in the CSV file
-		:param missing_values: Missing values to be replaced
-		:param fill_value: Values that replace missing values
-		"""
 		super().__init__(master=master)
 		self.__filename = filename
 		self.__skiprows = skiprows
@@ -48,20 +37,12 @@ class ConvertSetupWindow(Frame):
 		self.__config__()
 
 	def __open_file__(self):
-		"""
-		Simple method that uses pandas to open the specified CSV file
-		:return: DataFrame of the target CSV file
-		"""
 		df = pd.read_csv(self.__filename, skiprows=self.__skiprows, delimiter=self.__delimiter,
 						 na_values=self.__missing_values)
 		df = df.fillna(self.__fill_value)
 		return df
 
 	def __config__(self):
-		"""
-		Configures the window display
-		:return:
-		"""
 		self.pack(padx=Settings.padding_x, pady=Settings.padding_y, fill=BOTH)
 		self.winfo_toplevel().title('Connected to: {}'.format(self.__tool.database))
 
@@ -104,12 +85,6 @@ class ConvertSetupWindow(Frame):
 		convert_button.grid(row=0, column=1)
 
 	def __populate_table_headers__(self):
-		"""
-		Goes through every column within the dataframe and dynamically generates the column editing "row" inside the
-		header frame.
-		Maintains a copy of the primary key BooleanVars as it has to be used later on again
-		:return: None
-		"""
 		self.__pks = []
 		for col_name, col_type in zip(self.__df.columns.values, self.__df.dtypes):
 			inline_frame = Frame(master=self.__headers)
@@ -138,11 +113,6 @@ class ConvertSetupWindow(Frame):
 		utils.launch_file_selection(self.__master, self.__tool)
 
 	def __display_tables__(self):
-		"""
-		Displays the existing tables in the connected database
-		Triggered when menu item selected
-		:return: None
-		"""
 		tables = self.__tool.get_tables()
 		to_display = '\n'.join([key for key, value in tables.items()])
 		messagebox.showinfo('Existing Tables', to_display)
@@ -151,13 +121,6 @@ class ConvertSetupWindow(Frame):
 		pass
 
 	def __is_valid_pk__(self, headers: dict):
-		"""
-		Valid primary key can be composed of multiple columns
-		Join all the selected columns together into a column
-		A valid combination of PK when the length of the normal joint column is == to the length of the distinct column
-		:param headers: Column data
-		:return: If the combination of PKs are valid.
-		"""
 		pks = [key for key, value in headers.items() if value[1]]
 		filtered = self.__df[pks[0]].map(str)
 
@@ -171,24 +134,12 @@ class ConvertSetupWindow(Frame):
 
 	@staticmethod
 	def __check_pk__(headers: dict):
-		"""
-		Checks whether at least 1 column is selected to be the PK
-		Uses boolean algebra to determine if there is a PK selected
-		:param headers: Column data
-		:return: If there is a PK selected
-		"""
 		has_pk = False
 		for value in headers.values():
 			has_pk |= value[1]
 		return has_pk
 
 	def __get_all_values__(self):
-		"""
-		Loops through the headers (column editing) section widgets
-		Goes through each of the children of each row and extracts the data from it
-		Creates a dictionary where the keys are the column names and the values is a list => [<data_type>, <is_pk>]
-		:return: Dictionary of the column information needed to form an attr_dict
-		"""
 		rows = { }
 		key = ''
 		for i, row in enumerate(self.__headers.winfo_children()):
@@ -205,12 +156,6 @@ class ConvertSetupWindow(Frame):
 		return rows
 
 	def __convert__(self):
-		"""
-		Attempts to convert the input CSV file to a database table
-		Toggled on button click
-		Performs checks for empty table names, invalid combinations of PKs and no PKs being selected.
-		:return: None
-		"""
 		table_name = self.__tablename_field.get()
 		if table_name.strip() == '':
 			messagebox.showerror('Empty table name', 'You did not specify a table name!')
